@@ -48,6 +48,10 @@ val content = arrayOf(
         image = R.drawable.candy_hearts,
         price = "10",
         description = "text text text"
+    ), ContentItem(name = "Starburst",
+        image = R.drawable.starburst,
+        price = "15",
+        description = "text text text"
     ), ContentItem(name = "Chocolate Truffles",
         image = R.drawable.chocolate_truffles,
         price = "30",
@@ -103,10 +107,6 @@ val content = arrayOf(
     ), ContentItem(name = "Sprinkles",
         image = R.drawable.sprinkles,
         price = "25",
-        description = "text text text"
-    ), ContentItem(name = "Starburst",
-        image = R.drawable.starburst,
-        price = "15",
         description = "text text text"
     ), ContentItem(name = "Swirly Lollipop",
         image = R.drawable.swirly_lollipop,
@@ -166,7 +166,7 @@ fun CandyCard(name: String, imgId: Int, price: String, navController: NavControl
             )
             Button(
                 onClick = {
-                    navController.navigate(Screen.DetailsScreen.withArgs("Welcome to the candy shop"))
+                    navController.navigate(Screen.DetailsScreen.withArgs(name))
                 },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFFA0E7E5),
@@ -177,12 +177,13 @@ fun CandyCard(name: String, imgId: Int, price: String, navController: NavControl
                 .widthIn(min = 250.dp)
                 .heightIn(max = 35.dp)
             ) {
-            Text("details")
-        }
+                Text("details")
+            }
         }
 
     }
 }
+
 
 @Composable
 fun CandyShopMain(navController: NavController, modifier: Modifier = Modifier) {

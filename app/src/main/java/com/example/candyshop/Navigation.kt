@@ -13,48 +13,22 @@ import androidx.navigation.navArgument
 @Composable
 fun Navigation() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = Screen.CandyShopMain.route) {
-        composable(route = Screen.CandyShopMain.route) {
+    NavHost(navController = navController, startDestination = Screen.MainScreen.route) {
+        composable(route = Screen.MainScreen.route) {
             CandyShopMain(navController = navController)
         }
         composable(
-            route = Screen.DetailsScreen.route + "/{message}",
+            route = Screen.DetailsScreen.route + "/{name}",
             arguments = listOf(
-                navArgument("message") {
+                navArgument("name") {
                     type = NavType.StringType
-                    defaultValue = "and welcome"
+                    defaultValue = "candy"
                     nullable = true
                 }
             )
         ) { entry ->
-            DetailsScreen(message = entry.arguments?.getString("message"))
+            DetailsScreen(name = entry.arguments?.getString("name"))
         }
 
     }
-}
-
-
-//@Composable
-//fun MainScreen(navController: NavController) {
-//    Column {
-//        Text(
-//            text = "this is the main screen"
-//        )
-//        Button(
-//            onClick = {
-//                navController.navigate(Screen.DetailsScreen.withArgs("Huehuehue"))
-//            }
-//        ) {
-//            Text(text = "click for next page")
-//        }
-//    }
-//}
-
-@Composable
-fun DetailsScreen(message: String?) {
-    Text(
-        text = "Hello, $message!",
-        fontSize = 30.sp,
-        fontWeight = FontWeight.Bold
-    )
 }
