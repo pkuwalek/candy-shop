@@ -41,7 +41,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 
 fun getCandyDetailsByName(name: String?): ContentItem? {
     var result: ContentItem? = null
@@ -80,7 +81,7 @@ private fun QuantityTextField(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun DetailsScreen(name: String?, modifier: Modifier = Modifier) {
+fun DetailsScreen(name: String?, navController: NavController, modifier: Modifier = Modifier) {
     val candyItem = getCandyDetailsByName(name)
     Column(
         modifier = Modifier
@@ -147,7 +148,9 @@ fun DetailsScreen(name: String?, modifier: Modifier = Modifier) {
         ) {
             Button(
                 modifier = Modifier.weight(1f),
-                onClick = {},
+                onClick = {
+                    navController.popBackStack()
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFF748DA6),
                     contentColor = Color(0xFFD3CEDF))
@@ -156,7 +159,7 @@ fun DetailsScreen(name: String?, modifier: Modifier = Modifier) {
             }
             OutlinedButton(
                 modifier = Modifier.weight(1f),
-                onClick = {},
+                onClick = { /*TODO*/ },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFFD3CEDF),
                     contentColor = Color(0xFF748DA6)),
@@ -171,5 +174,5 @@ fun DetailsScreen(name: String?, modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun DetailsScreenPreview() {
-    DetailsScreen("Fizzy Tablets")
+    DetailsScreen("Fizzy Tablets", rememberNavController())
 }
