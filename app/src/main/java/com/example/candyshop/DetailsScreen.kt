@@ -55,7 +55,7 @@ fun getCandyDetailsByName(name: String?): ContentItem? {
 }
 
 @Composable
-private fun QuantityTextField(modifier: Modifier = Modifier) {
+private fun QuantityTextField() {
     var text by remember { mutableStateOf("") }
     TextField(
         value = text,
@@ -65,8 +65,7 @@ private fun QuantityTextField(modifier: Modifier = Modifier) {
         singleLine = true,
         textStyle = TextStyle(
             color = Color(0xFF748DA6),
-            fontWeight = FontWeight.Bold
-        ),
+            fontWeight = FontWeight.Bold),
         shape = CircleShape,
         colors = TextFieldDefaults.colors(
             unfocusedContainerColor = Color(0xFFD3CEDF),
@@ -74,15 +73,15 @@ private fun QuantityTextField(modifier: Modifier = Modifier) {
             unfocusedLabelColor = Color(0xFF748DA6),
             focusedLabelColor = Color(0xFF748DA6),
             unfocusedIndicatorColor = Color.Transparent,
-            focusedIndicatorColor = Color.Transparent
-        ),
+            focusedIndicatorColor = Color.Transparent),
         modifier = Modifier.fillMaxWidth()
     )
 }
 
 @Composable
-fun DetailsScreen(name: String?, navController: NavController, modifier: Modifier = Modifier) {
+fun DetailsScreen(name: String?, navController: NavController) {
     val candyItem = getCandyDetailsByName(name)
+    val isEnabled by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -96,6 +95,7 @@ fun DetailsScreen(name: String?, navController: NavController, modifier: Modifie
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
+                        .fillMaxWidth()
                         .heightIn(max = 250.dp)
                         .border(4.dp, Color(0xFF9CB4CC))
                 )
@@ -160,6 +160,7 @@ fun DetailsScreen(name: String?, navController: NavController, modifier: Modifie
             OutlinedButton(
                 modifier = Modifier.weight(1f),
                 onClick = { /*TODO*/ },
+                enabled = isEnabled,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFFD3CEDF),
                     contentColor = Color(0xFF748DA6)),

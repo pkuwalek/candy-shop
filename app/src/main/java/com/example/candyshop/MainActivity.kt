@@ -109,7 +109,7 @@ fun CandyCard(name: String, imgId: Int, price: String, navController: NavControl
 
 
 @Composable
-fun CandyShopMain(navController: NavController, modifier: Modifier = Modifier) {
+fun CandyShopMain(navController: NavController) {
     Row(
         modifier = Modifier
             .padding(8.dp)
