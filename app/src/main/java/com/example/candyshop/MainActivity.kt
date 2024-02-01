@@ -46,7 +46,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             Navigation()
-
 //            CandyShopTheme {
 //                // A surface container using the 'background' color from the theme
 //                Surface(
@@ -62,37 +61,37 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun CandyCard(name: String, imgId: Int, price: String, navController: NavController) {
-    Row (
+    Row(
         modifier = Modifier
             .padding(4.dp)
             .fillMaxWidth()
-            .border(2.dp, Color(0xFFD3CEDF))
+            .border(2.dp, Color(R.color.light_purple))
             .size(width = 400.dp, height = 120.dp)
             .padding(4.dp),
         verticalAlignment = Alignment.CenterVertically
-    ){
+    ) {
         Image(
             painter = painterResource(id = imgId),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(120.dp)
-                .border(2.dp, Color(0xFF9CB4CC), CircleShape)
+                .border(2.dp, Color(R.color.light_blue), CircleShape)
                 .padding(2.dp)
                 .clip(CircleShape)
         )
-        Column (
+        Column(
             modifier = Modifier.padding(start = 16.dp)
         ) {
             Text(
                 text = name,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF748DA6)
+                color = Color(R.color.dark_blue)
             )
             Text(
                 text = "price: $price $",
-                color = Color(0xFF748DA6),
+                color = Color(R.color.dark_blue),
                 modifier = Modifier.padding(top = 6.dp, bottom = 14.dp)
             )
             Button(
@@ -100,9 +99,9 @@ fun CandyCard(name: String, imgId: Int, price: String, navController: NavControl
                     navController.navigate(Screen.DetailsScreen.withArgs(name))
                 },
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFD3CEDF),
-                contentColor = Color(0xFF748DA6)),
-            border = BorderStroke(2.dp, Color(0xFF748DA6)),
+                containerColor = Color(R.color.light_purple),
+                contentColor = Color(R.color.dark_blue)),
+            border = BorderStroke(2.dp, Color(R.color.dark_blue)),
             modifier = Modifier
                 .widthIn(min = 250.dp)
                 .heightIn(max = 35.dp)
@@ -110,7 +109,6 @@ fun CandyCard(name: String, imgId: Int, price: String, navController: NavControl
                 Text("DETAILS")
             }
         }
-
     }
 }
 
@@ -122,27 +120,27 @@ fun CandyShopMain(navController: NavController, modifier: Modifier = Modifier) {
             .padding(8.dp)
             .fillMaxSize(),
         horizontalArrangement = Arrangement.Center
-    ){
+    ) {
         Icon(
             painter = painterResource(id = R.drawable.icecream_icon),
             contentDescription = "ice cream icon",
-            tint = Color(0xFF748DA6)
+            tint = Color(R.color.dark_blue)
         )
         Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-        Text (
+        Text(
             text = "CANDY SHOP",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF748DA6)
+            color = Color(R.color.dark_blue)
         )
         Spacer(Modifier.size(ButtonDefaults.IconSpacing))
         Icon(
             painter = painterResource(id = R.drawable.icecream_icon),
             contentDescription = "ice cream icon",
-            tint = Color(0xFF748DA6)
+            tint = Color(R.color.dark_blue)
         )
     }
-    LazyColumn (
+    LazyColumn(
         modifier = Modifier.padding(top = 55.dp)
     ) {
         for (item in content) {

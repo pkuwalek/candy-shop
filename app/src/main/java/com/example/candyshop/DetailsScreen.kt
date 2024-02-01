@@ -68,15 +68,15 @@ private fun QuantityTextField(modifier: Modifier = Modifier) {
         label = { Text("Choose quantity") },
         singleLine = true,
         textStyle = TextStyle(
-            color = Color(0xFF748DA6),
+            color = Color(R.color.dark_blue),
             fontWeight = FontWeight.Bold
         ),
         shape = CircleShape,
         colors = TextFieldDefaults.colors(
-            unfocusedContainerColor = Color(0xFFD3CEDF),
-            focusedContainerColor = Color(0xFFF2D7D9),
-            unfocusedLabelColor = Color(0xFF748DA6),
-            focusedLabelColor = Color(0xFF748DA6),
+            unfocusedContainerColor = Color(R.color.light_purple),
+            focusedContainerColor = Color(R.color.light_pink),
+            unfocusedLabelColor = Color(R.color.dark_blue),
+            focusedLabelColor = Color(R.color.dark_blue),
             unfocusedIndicatorColor = Color.Transparent,
             focusedIndicatorColor = Color.Transparent
         ),
@@ -87,7 +87,7 @@ private fun QuantityTextField(modifier: Modifier = Modifier) {
 @Composable
 fun DetailsScreen(name: String?, modifier: Modifier = Modifier) {
     val candyItem = getCandyDetailsByName(name)
-    Column (
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
@@ -101,7 +101,7 @@ fun DetailsScreen(name: String?, modifier: Modifier = Modifier) {
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .heightIn(max = 250.dp)
-                        .border(4.dp, Color(0xFF9CB4CC))
+                        .border(4.dp, Color(R.color.light_blue))
                 )
             }
             Text(
@@ -129,16 +129,16 @@ fun DetailsScreen(name: String?, modifier: Modifier = Modifier) {
             Button(
                 onClick = { },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFD3CEDF),
-                    contentColor = Color(0xFF748DA6)),
-                border = BorderStroke(2.dp, Color(0xFF748DA6)),
+                    containerColor = Color(R.color.light_purple),
+                    contentColor = Color(R.color.dark_blue)),
+                border = BorderStroke(2.dp, Color(R.color.dark_blue)),
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
                 Icon(
                     Icons.Rounded.ShoppingCart,
                     contentDescription = "add to cart icon",
-                    tint = Color(0xFF748DA6)
+                    tint = Color(R.color.dark_blue)
                 )
                 Spacer(Modifier.size(ButtonDefaults.IconSpacing))
                 Text("ADD TO CART")
@@ -154,8 +154,8 @@ fun DetailsScreen(name: String?, modifier: Modifier = Modifier) {
                 modifier = Modifier.weight(1f),
                 onClick = {},
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF748DA6),
-                    contentColor = Color(0xFFD3CEDF))
+                    containerColor = Color(R.color.dark_blue),
+                    contentColor = Color(R.color.light_purple))
             ) {
                 Text("BACK")
             }
@@ -163,14 +163,12 @@ fun DetailsScreen(name: String?, modifier: Modifier = Modifier) {
                 modifier = Modifier.weight(1f),
                 onClick = {},
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFD3CEDF),
-                    contentColor = Color(0xFF748DA6)),
-                border = BorderStroke(2.dp, Color(0xFF748DA6))
+                    containerColor = Color(R.color.light_purple),
+                    contentColor = Color(R.color.dark_blue)),
+                border = BorderStroke(2.dp, Color(R.color.dark_blue))
             ) {
                 Text("NEXT")
             }
-       
-
         }
     }
 }
