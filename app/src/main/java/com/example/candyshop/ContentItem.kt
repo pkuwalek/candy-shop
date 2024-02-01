@@ -1,6 +1,4 @@
-package com.example.candyshop.ui.theme
-
-import com.example.candyshop.R
+package com.example.candyshop
 
 data class ContentItem(
     val name: String,
