@@ -7,7 +7,7 @@ data class ContentItem(
    val description: String
 )
 
-val content = arrayOf(
+val content = listOf(
     ContentItem(
         name = "Candy Hearts",
         image = R.drawable.candy_hearts,
