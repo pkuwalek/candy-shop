@@ -19,6 +19,7 @@ import androidx.compose.material.icons.rounded.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -32,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -43,6 +45,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.candyshop.ui.theme.CandyShopTheme
+import java.text.NumberFormat
 
 fun getCandyDetailsByName(name: String?): ContentItem? {
     var result: ContentItem? = null
@@ -64,14 +68,14 @@ private fun QuantityTextField() {
         label = { Text("Choose quantity") },
         singleLine = true,
         textStyle = TextStyle(
-            color = Color(0xFF748DA6),
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
             fontWeight = FontWeight.Bold),
         shape = CircleShape,
         colors = TextFieldDefaults.colors(
-            unfocusedContainerColor = Color(0xFFD3CEDF),
-            focusedContainerColor = Color(0xFFF2D7D9),
-            unfocusedLabelColor = Color(0xFF748DA6),
-            focusedLabelColor = Color(0xFF748DA6),
+            unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+            focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+            unfocusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            focusedLabelColor = MaterialTheme.colorScheme.onSecondaryContainer,
             unfocusedIndicatorColor = Color.Transparent,
             focusedIndicatorColor = Color.Transparent),
         modifier = Modifier.fillMaxWidth()
@@ -85,7 +89,7 @@ fun DetailsScreen(name: String?, navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(dimensionResource(id = R.dimen.padding_medium)),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column {
@@ -97,25 +101,24 @@ fun DetailsScreen(name: String?, navController: NavController) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .heightIn(max = 250.dp)
-                        .border(4.dp, Color(0xFF9CB4CC))
+                        .border(dimensionResource(id = R.dimen.border_m), MaterialTheme.colorScheme.primary)
                 )
             }
             Text(
                 text = "About our $name",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(top = 8.dp)
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(top = dimensionResource(id = R.dimen.padding_small))
             )
             Text(
                 text = stringResource(id = R.string.about_candy_placeholder),
-                fontSize = 15.sp,
+                style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Justify,
-                modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)
+                modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_small))
             )
             if (candyItem != null) {
                 Text(
-                    text = "PRICE: ${candyItem.price} $/kg",
-                    fontWeight = FontWeight.Bold
+                    text = "PRICE: ${NumberFormat.getCurrencyInstance().format(candyItem.price)}",
+                    style = MaterialTheme.typography.labelLarge
                 )
             }
         }
@@ -125,16 +128,16 @@ fun DetailsScreen(name: String?, navController: NavController) {
             Button(
                 onClick = { },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFD3CEDF),
-                    contentColor = Color(0xFF748DA6)),
-                border = BorderStroke(2.dp, Color(0xFF748DA6)),
+                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer),
+                border = BorderStroke(dimensionResource(id = R.dimen.border_xs), MaterialTheme.colorScheme.onTertiaryContainer),
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
                 Icon(
                     Icons.Rounded.ShoppingCart,
                     contentDescription = "add to cart icon",
-                    tint = Color(0xFF748DA6)
+                    tint = MaterialTheme.colorScheme.onTertiaryContainer
                 )
                 Spacer(Modifier.size(ButtonDefaults.IconSpacing))
                 Text("ADD TO CART")
@@ -143,7 +146,7 @@ fun DetailsScreen(name: String?, navController: NavController) {
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium)),
             verticalAlignment = Alignment.Bottom
         ) {
             Button(
@@ -152,8 +155,8 @@ fun DetailsScreen(name: String?, navController: NavController) {
                     navController.popBackStack()
                 },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF748DA6),
-                    contentColor = Color(0xFFD3CEDF))
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer)
             ) {
                 Text("BACK")
             }
@@ -162,9 +165,9 @@ fun DetailsScreen(name: String?, navController: NavController) {
                 onClick = { /*TODO*/ },
                 enabled = isEnabled,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFD3CEDF),
-                    contentColor = Color(0xFF748DA6)),
-                border = BorderStroke(2.dp, Color(0xFF748DA6))
+                    containerColor = MaterialTheme.colorScheme.background,
+                    contentColor = MaterialTheme.colorScheme.outline),
+                border = BorderStroke(dimensionResource(id = R.dimen.border_xs), MaterialTheme.colorScheme.outline)
             ) {
                 Text("NEXT")
             }
@@ -175,5 +178,7 @@ fun DetailsScreen(name: String?, navController: NavController) {
 @Preview(showBackground = true)
 @Composable
 fun DetailsScreenPreview() {
-    DetailsScreen("Fizzy Tablets", rememberNavController())
+    CandyShopTheme {
+        DetailsScreen("Fizzy Tablets", rememberNavController())
+    }
 }
