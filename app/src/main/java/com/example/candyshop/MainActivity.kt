@@ -6,11 +6,9 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -38,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import java.text.NumberFormat
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,9 +57,9 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun CandyCard(name: String, imgId: Int, price: String, navController: NavController) {
+fun CandyCard(name: String, imgId: Int, price: String, navController: NavController, modifier: Modifier = Modifier) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .padding(4.dp)
             .fillMaxWidth()
             .border(2.dp, Color(0xFFD3CEDF))
@@ -88,7 +87,7 @@ fun CandyCard(name: String, imgId: Int, price: String, navController: NavControl
                 color = Color(0xFF748DA6)
             )
             Text(
-                text = "price: $price $",
+                text = "price: $price",
                 color = Color(0xFF748DA6),
                 modifier = Modifier.padding(top = 6.dp, bottom = 14.dp)
             )
@@ -116,7 +115,8 @@ fun TopLogoBar(modifier: Modifier = Modifier) {
     CenterAlignedTopAppBar(
         title = {
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = modifier
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.icecream_icon),
@@ -147,14 +147,14 @@ fun CandyShopMain(navController: NavController) {
         topBar = {
             TopLogoBar()
         }
-    ) { it ->
+    ) {
         LazyColumn(contentPadding = it) {
             for (item in content) {
                 item {
                     CandyCard(
                         name = item.name,
                         imgId = item.image,
-                        price = item.price,
+                        price = NumberFormat.getCurrencyInstance().format(item.price),
                         navController = navController
                     )
                 }
