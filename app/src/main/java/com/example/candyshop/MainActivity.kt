@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -67,7 +68,12 @@ fun SmallCircleImage(imageId: Int) {
 
 @Composable
 fun CandyCard(name: String, imgId: Int, price: String, navController: NavController, modifier: Modifier = Modifier) {
-    Card(modifier = modifier.fillMaxWidth()) {
+    Card(modifier = modifier
+        .fillMaxWidth()
+        .clickable {
+            navController.navigate(Screen.DetailsScreen.withArgs(name))
+        }
+    ) {
         Row(
             modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)),
             verticalAlignment = Alignment.CenterVertically
@@ -78,27 +84,15 @@ fun CandyCard(name: String, imgId: Int, price: String, navController: NavControl
             ) {
                 Text(
                     text = name,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
                 Text(
                     text = "price: $price",
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                     modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_small))
                 )
-                Button(
-                    onClick = {
-                        navController.navigate(Screen.DetailsScreen.withArgs(name))
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onTertiaryContainer),
-                    border = BorderStroke(dimensionResource(id = R.dimen.border_xs), MaterialTheme.colorScheme.onTertiaryContainer),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("DETAILS")
-                }
             }
         }
     }
