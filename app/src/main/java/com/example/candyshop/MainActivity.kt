@@ -20,7 +20,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -107,45 +110,54 @@ fun CandyCard(name: String, imgId: Int, price: String, navController: NavControl
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TopLogoBar(modifier: Modifier = Modifier) {
+    CenterAlignedTopAppBar(
+        title = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.icecream_icon),
+                    contentDescription = "ice cream icon",
+                    tint = Color(0xFF748DA6)
+                )
+                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                Text(
+                    text = "CANDY SHOP",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF748DA6)
+                )
+                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                Icon(
+                    painter = painterResource(id = R.drawable.icecream_icon),
+                    contentDescription = "ice cream icon",
+                    tint = Color(0xFF748DA6)
+                )
+            }
+        }
+    )
+}
 
 @Composable
 fun CandyShopMain(navController: NavController) {
-    Row(
-        modifier = Modifier
-            .padding(8.dp)
-            .fillMaxSize(),
-        horizontalArrangement = Arrangement.Center
-    ) {
-        Icon(
-            painter = painterResource(id = R.drawable.icecream_icon),
-            contentDescription = "ice cream icon",
-            tint = Color(0xFF748DA6)
-        )
-        Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-        Text(
-            text = "CANDY SHOP",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color(0xFF748DA6)
-        )
-        Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-        Icon(
-            painter = painterResource(id = R.drawable.icecream_icon),
-            contentDescription = "ice cream icon",
-            tint = Color(0xFF748DA6)
-        )
-    }
-    LazyColumn(
-        modifier = Modifier.padding(top = 55.dp)
-    ) {
-        for (item in content) {
-            item {
-                CandyCard(
-                    name = item.name,
-                    imgId = item.image,
-                    price = item.price,
-                    navController = navController
-                )
+    Scaffold(
+        topBar = {
+            TopLogoBar()
+        }
+    ) { it ->
+        LazyColumn(contentPadding = it) {
+            for (item in content) {
+                item {
+                    CandyCard(
+                        name = item.name,
+                        imgId = item.image,
+                        price = item.price,
+                        navController = navController
+                    )
+                }
             }
         }
     }
