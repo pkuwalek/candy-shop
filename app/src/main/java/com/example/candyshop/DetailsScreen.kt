@@ -42,7 +42,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.candyshop.ui.theme.CandyShopTheme
@@ -101,14 +100,19 @@ fun DetailsScreen(name: String?, navController: NavController) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .heightIn(max = 250.dp)
-                        .border(dimensionResource(id = R.dimen.border_m), MaterialTheme.colorScheme.primary)
+                        .border(
+                            dimensionResource(id = R.dimen.border_m),
+                            MaterialTheme.colorScheme.primary
+                        )
                 )
             }
-            Text(
-                text = "About our $name",
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(top = dimensionResource(id = R.dimen.padding_small))
-            )
+            if (candyItem != null) {
+                Text(
+                    text = stringResource(id = R.string.about, candyItem.name),
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(top = dimensionResource(id = R.dimen.padding_small))
+                )
+            }
             Text(
                 text = stringResource(id = R.string.about_candy_placeholder),
                 style = MaterialTheme.typography.bodyMedium,
@@ -117,14 +121,14 @@ fun DetailsScreen(name: String?, navController: NavController) {
             )
             if (candyItem != null) {
                 Text(
-                    text = "PRICE: ${NumberFormat.getCurrencyInstance().format(candyItem.price)}",
+                    text = stringResource(id = R.string.price, NumberFormat.getCurrencyInstance().format(candyItem.price)),
                     style = MaterialTheme.typography.labelLarge
                 )
             }
         }
         Column {
             QuantityTextField()
-            Spacer(Modifier.size(10.dp))
+            Spacer(Modifier.size(dimensionResource(id = R.dimen.padding_small)))
             Button(
                 onClick = { },
                 colors = ButtonDefaults.buttonColors(
@@ -140,7 +144,7 @@ fun DetailsScreen(name: String?, navController: NavController) {
                     tint = MaterialTheme.colorScheme.onTertiaryContainer
                 )
                 Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                Text("ADD TO CART")
+                Text(stringResource(id = R.string.cart).uppercase())
             }
         }
         Row(
@@ -158,7 +162,7 @@ fun DetailsScreen(name: String?, navController: NavController) {
                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
                     contentColor = MaterialTheme.colorScheme.onSecondaryContainer)
             ) {
-                Text("BACK")
+                Text(stringResource(id = R.string.back).uppercase())
             }
             OutlinedButton(
                 modifier = Modifier.weight(1f),
@@ -169,7 +173,7 @@ fun DetailsScreen(name: String?, navController: NavController) {
                     contentColor = MaterialTheme.colorScheme.outline),
                 border = BorderStroke(dimensionResource(id = R.dimen.border_xs), MaterialTheme.colorScheme.outline)
             ) {
-                Text("NEXT")
+                Text(stringResource(id = R.string.next).uppercase())
             }
         }
     }
