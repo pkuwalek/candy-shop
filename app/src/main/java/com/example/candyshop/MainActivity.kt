@@ -66,11 +66,11 @@ fun SmallCircleImage(imageId: Int) {
 }
 
 @Composable
-fun CandyCard(name: String, imgId: Int, price: String, navController: NavController, modifier: Modifier = Modifier) {
+fun CandyCard(candyId: Int, name: String, imgId: Int, price: String, navController: NavController, modifier: Modifier = Modifier) {
     Card(modifier = modifier
         .fillMaxWidth()
         .clickable {
-            navController.navigate(Screen.DetailsScreen.withArgs(name))
+            navController.navigate(Screen.DetailsScreen.withArgs(candyId))
         }
     ) {
         Row(
@@ -113,7 +113,7 @@ fun TopLogoBar(modifier: Modifier = Modifier) {
                 )
                 Spacer(Modifier.size(ButtonDefaults.IconSpacing))
                 Text(
-                    text = "CANDY SHOP",
+                    text = stringResource(id = R.string.app_name).uppercase(),
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.onBackground
                 )
@@ -139,6 +139,7 @@ fun CandyShopMain(navController: NavController) {
             for (item in content) {
                 item {
                     CandyCard(
+                        candyId = item.id,
                         name = item.name,
                         imgId = item.image,
                         price = NumberFormat.getCurrencyInstance().format(item.price),

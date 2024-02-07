@@ -47,10 +47,10 @@ import androidx.navigation.compose.rememberNavController
 import com.example.candyshop.ui.theme.CandyShopTheme
 import java.text.NumberFormat
 
-fun getCandyDetailsByName(name: String?): ContentItem? {
+fun getCandyDetailsById(id: Int?): ContentItem? {
     var result: ContentItem? = null
     for (item in content) {
-        if (item.name == name) {
+        if (item.id == id) {
             result = item
         }
     }
@@ -82,8 +82,8 @@ private fun QuantityTextField() {
 }
 
 @Composable
-fun DetailsScreen(name: String?, navController: NavController) {
-    val candyItem = getCandyDetailsByName(name)
+fun DetailsScreen(id: Int?, navController: NavController) {
+    val candyItem = getCandyDetailsById(id)
     val isEnabled by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
@@ -183,6 +183,6 @@ fun DetailsScreen(name: String?, navController: NavController) {
 @Composable
 fun DetailsScreenPreview() {
     CandyShopTheme {
-        DetailsScreen("Fizzy Tablets", rememberNavController())
+        DetailsScreen(id = 5, rememberNavController())
     }
 }

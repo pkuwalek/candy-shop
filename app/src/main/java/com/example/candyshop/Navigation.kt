@@ -33,16 +33,15 @@ fun Navigation() {
             CandyShopMain(navController = navController)
         }
         composable(
-            route = Screen.DetailsScreen.route + "/{name}",
+            route = Screen.DetailsScreen.route + "/{id}",
             arguments = listOf(
-                navArgument("name") {
-                    type = NavType.StringType
-                    defaultValue = "candy"
+                navArgument("id") {
+                    type = NavType.IntType
                     nullable = true
                 }
             )
         ) { entry ->
-            DetailsScreen(name = entry.arguments?.getString("name"), navController = navController)
+            DetailsScreen(id = entry.arguments?.getInt("id"), navController = navController)
         }
 
     }
