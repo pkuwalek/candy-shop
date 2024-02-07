@@ -1,7 +1,5 @@
 package com.example.candyshop
 
-import java.util.UUID
-
 data class ContentItem(
     val id: Int,
     val name: String,

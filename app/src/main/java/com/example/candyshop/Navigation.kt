@@ -37,7 +37,7 @@ fun Navigation() {
             arguments = listOf(
                 navArgument("id") {
                     type = NavType.IntType
-                    nullable = true
+                    nullable = false
                 }
             )
         ) { entry ->
