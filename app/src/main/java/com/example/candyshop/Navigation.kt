@@ -9,24 +9,28 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 
+private const val TWEEN_DURATION = 500
 @Composable
 fun Navigation() {
     val navController = rememberNavController()
-    val time = 500
     NavHost(
         navController = navController,
         startDestination = Screen.MainScreen.route,
         enterTransition = {
-            slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left, tween(time))
+            slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left, tween(
+                TWEEN_DURATION))
         },
         exitTransition = {
-            slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left,tween(time))
+            slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left,tween(
+                TWEEN_DURATION))
         },
         popEnterTransition = {
-            slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right,tween(time))
+            slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right,tween(
+                TWEEN_DURATION))
         },
         popExitTransition = {
-            slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right,tween(time))
+            slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right,tween(
+                TWEEN_DURATION))
         }
     ) {
         composable(route = Screen.MainScreen.route) {
