@@ -34,7 +34,7 @@ fun Navigation() {
         }
     ) {
         composable(route = Screen.MainScreen.route) {
-            CandyShopMain(navController = navController)
+            CandyShopMain(navController = navController, content)
         }
         composable(
             route = Screen.DetailsScreen.route + "/{id}",

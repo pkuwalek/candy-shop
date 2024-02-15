@@ -47,16 +47,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.candyshop.ui.theme.CandyShopTheme
 import java.text.NumberFormat
 
-fun getCandyDetailsById(id: Int?): ContentItem? {
-    var result: ContentItem? = null
-    for (item in content) {
-        if (item.id == id) {
-            result = item
-        }
-    }
-    return result
-}
-
 @Composable
 private fun QuantityTextField() {
     var text by remember { mutableStateOf("") }

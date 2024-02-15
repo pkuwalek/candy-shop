@@ -7,6 +7,7 @@ data class ContentItem(
     val price: Int,
     val description: String = "some placeholder text"
 )
+fun getCandyDetailsById(id: Int?): ContentItem? = content.firstOrNull { id == it.id }
 
 val content = listOf(
     ContentItem(
