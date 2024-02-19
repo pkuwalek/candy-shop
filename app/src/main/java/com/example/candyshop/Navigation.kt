@@ -8,6 +8,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.candyshop.data.content
+import com.example.candyshop.ui.CandyShopMain
+import com.example.candyshop.ui.DetailsScreen
 
 private const val TWEEN_DURATION = 500
 @Composable
