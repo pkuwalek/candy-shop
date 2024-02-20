@@ -56,7 +56,6 @@ import com.example.candyshop.utils.bounceClickWithColorRipple
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 
-
 @Composable
 fun SmallCircleImage(imageId: Int) {
     Image(

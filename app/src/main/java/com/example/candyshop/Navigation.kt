@@ -50,6 +50,5 @@ fun Navigation() {
         ) { entry ->
             DetailsScreen(id = entry.arguments?.getInt("id"), navController = navController)
         }
-
     }
 }

@@ -55,7 +55,10 @@ import com.example.candyshop.ui.theme.CandyShopTheme
 import java.text.NumberFormat
 
 @Composable
-private fun QuantityTextField(textFieldInput: String, onTextFieldInputChanged: (String) -> Unit) {
+private fun QuantityTextField(
+    textFieldInput: String,
+    onTextFieldInputChanged: (String) -> Unit
+) {
     TextField(
         value = textFieldInput,
         onValueChange = onTextFieldInputChanged,
@@ -78,11 +81,16 @@ private fun QuantityTextField(textFieldInput: String, onTextFieldInputChanged: (
 }
 
 @Composable
-fun ShoppingCartAlert(modifier: Modifier = Modifier, shopViewModel: ShopViewModel = viewModel()) {
+fun ShoppingCartAlert(
+    modifier: Modifier = Modifier,
+    shopViewModel: ShopViewModel = viewModel()
+) {
     AlertDialog(
         onDismissRequest = { },
         title = { Text(text = "Your shopping cart") },
-        text = { Text(text = "Items:") },
+        text = {
+            Text("Here the items will be displayed.")
+        },
         modifier = modifier,
         dismissButton = {
             TextButton(
@@ -103,7 +111,10 @@ fun ShoppingCartAlert(modifier: Modifier = Modifier, shopViewModel: ShopViewMode
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(navController: NavController, shopViewModel: ShopViewModel = viewModel()) {
+fun TopBar(
+    navController: NavController,
+    shopViewModel: ShopViewModel = viewModel()
+) {
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -164,8 +175,8 @@ fun DetailsScreen(
                 },
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Column {
-                if (candyItem != null) {
+            if (candyItem != null) {
+                Column {
                     Image(
                         painter = painterResource(id = candyItem.image),
                         contentDescription = null,
@@ -178,55 +189,55 @@ fun DetailsScreen(
                                 MaterialTheme.colorScheme.primary
                             )
                     )
-                }
-                if (candyItem != null) {
                     Text(
                         text = stringResource(id = R.string.about, candyItem.name),
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(top = dimensionResource(id = R.dimen.padding_small))
                     )
-                }
-                Text(
-                    text = stringResource(id = R.string.about_candy_placeholder),
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Justify,
-                    modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_small))
-                )
-                if (candyItem != null) {
                     Text(
-                        text = stringResource(id = R.string.price, NumberFormat.getCurrencyInstance().format(candyItem.price)),
+                        text = stringResource(id = R.string.about_candy_placeholder),
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Justify,
+                        modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_small))
+                    )
+                    Text(
+                        text = stringResource(
+                            id = R.string.price,
+                            NumberFormat.getCurrencyInstance().format(candyItem.price)
+                        ),
                         style = MaterialTheme.typography.labelLarge
                     )
                 }
-            }
-            Column {
-                QuantityTextField(
-                    textFieldInput = shopViewModel.textFieldInput,
-                    onTextFieldInputChanged = { shopViewModel.updateTextField(it) }
-                )
-                Spacer(Modifier.size(dimensionResource(id = R.dimen.padding_small)))
-                Button(
-                    onClick = {
-                        // clear text area
-                        shopViewModel.updateTextField("")
-                        // take user input from text field
-                        //
-                        //
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onTertiaryContainer),
-                    border = BorderStroke(dimensionResource(id = R.dimen.border_xs), MaterialTheme.colorScheme.onTertiaryContainer),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    Icon(
-                        Icons.Rounded.ShoppingCart,
-                        contentDescription = "add to cart icon",
-                        tint = MaterialTheme.colorScheme.onTertiaryContainer
+                Column {
+                    QuantityTextField(
+                        textFieldInput = shopViewModel.textFieldInput,
+                        onTextFieldInputChanged = { shopViewModel.updateTextField(it) }
                     )
-                    Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                    Text(stringResource(id = R.string.cart).uppercase())
+                    Spacer(Modifier.size(dimensionResource(id = R.dimen.padding_small)))
+                    Button(
+                        onClick = {
+                            shopViewModel.addToCart(candyItem)
+                            shopViewModel.updateTextField("")
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                        ),
+                        border = BorderStroke(
+                            dimensionResource(id = R.dimen.border_xs),
+                            MaterialTheme.colorScheme.onTertiaryContainer
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        Icon(
+                            Icons.Rounded.ShoppingCart,
+                            contentDescription = "add to cart icon",
+                            tint = MaterialTheme.colorScheme.onTertiaryContainer
+                        )
+                        Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                        Text(stringResource(id = R.string.cart).uppercase())
+                    }
                 }
             }
         }
