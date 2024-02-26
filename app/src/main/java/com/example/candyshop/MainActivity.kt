@@ -3,6 +3,7 @@ package com.example.candyshop
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import com.example.candyshop.ui.CandyShopMain
 import com.example.candyshop.ui.theme.CandyShopTheme
 
 class MainActivity : ComponentActivity() {
@@ -10,7 +11,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             CandyShopTheme {
-                Navigation()
+//                Navigation()
+                CandyShopMain()
             }
         }
     }
