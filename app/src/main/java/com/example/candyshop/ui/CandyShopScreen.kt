@@ -45,6 +45,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.candyshop.R
@@ -186,11 +187,14 @@ fun CandyShopMain(navController: NavController, candies: List<ContentItem>) {
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     val showButton by remember { derivedStateOf { listState.firstVisibleItemIndex > 0 } }
+
+    val candyViewModel: ShopViewModel = viewModel()
     Scaffold(
         topBar = {
             TopLogoBar()
         }
     ) {
+        Text(text = candyViewModel.candyUiState)
         LazyColumn(
             state = listState,
             contentPadding = it
