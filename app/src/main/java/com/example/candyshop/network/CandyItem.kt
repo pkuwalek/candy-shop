@@ -1,5 +1,6 @@
 package com.example.candyshop.network
 
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

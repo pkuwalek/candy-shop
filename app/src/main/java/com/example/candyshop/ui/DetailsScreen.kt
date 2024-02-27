@@ -1,8 +1,8 @@
 package com.example.candyshop.ui
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -33,19 +33,15 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -58,11 +54,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.candyshop.R
-import com.example.candyshop.Screen
-import com.example.candyshop.network.CandyItem
 import com.example.candyshop.ui.theme.CandyShopTheme
-import kotlinx.coroutines.launch
-import java.text.NumberFormat
 
 @Composable
 private fun QuantityTextField(
@@ -93,7 +85,7 @@ private fun QuantityTextField(
 @Composable
 fun ShoppingCartAlert(
     modifier: Modifier = Modifier,
-    shopViewModel: ShopViewModel = viewModel()
+    detailsViewModel: CandyShopViewModel = viewModel()
 ) {
     AlertDialog(
         onDismissRequest = { },
@@ -105,7 +97,7 @@ fun ShoppingCartAlert(
         dismissButton = {
             TextButton(
                 onClick = {
-                    shopViewModel.showCart = false
+//                    detailsViewModel.showCart = false
                 }
             ) {
                 Text(text = "Close")
@@ -123,7 +115,7 @@ fun ShoppingCartAlert(
 @Composable
 fun TopBar(
     navController: NavController,
-    shopViewModel: ShopViewModel = viewModel()
+    detailsViewModel: CandyShopViewModel = viewModel()
 ) {
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
@@ -147,7 +139,9 @@ fun TopBar(
         },
         actions = {
             IconButton(
-                onClick = { shopViewModel.showCart = true }
+                onClick = {
+//                    detailsViewModel.showCart = true
+                }
             ) {
                 Icon(
                     imageVector = Icons.Rounded.ShoppingCart,
@@ -155,9 +149,9 @@ fun TopBar(
                     tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
-            if (shopViewModel.showCart) {
-                ShoppingCartAlert()
-            }
+//            if (detailsViewModel.showCart) {
+//                ShoppingCartAlert()
+//            }
         },
     )
 }
@@ -167,7 +161,7 @@ fun DetailsScreenContent(
     candyName: String,
     photoUrl: String,
     navController: NavController,
-    shopViewModel: ShopViewModel
+    detailsViewModel: CandyShopViewModel
 ) {
     val focusManager = LocalFocusManager.current
     Scaffold(
@@ -220,8 +214,8 @@ fun DetailsScreenContent(
             }
             Column {
                 QuantityTextField(
-                    textFieldInput = shopViewModel.textFieldInput,
-                    onTextFieldInputChanged = { shopViewModel.updateTextField(it) }
+                    textFieldInput = detailsViewModel.textFieldInput,
+                    onTextFieldInputChanged = { detailsViewModel.updateTextField(it) }
                 )
                 Spacer(Modifier.size(dimensionResource(id = R.dimen.padding_small)))
                 Button(
@@ -253,33 +247,28 @@ fun DetailsScreenContent(
     }
 }
 
-@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun DetailsScreen(
     id: Int?,
     navController: NavController
 ) {
-    val candyViewModel: ShopViewModel = viewModel(factory = ShopViewModel.Factory)
+    val candyViewModel: CandyShopViewModel = viewModel(factory = CandyShopViewModel.Factory)
+    val item = id?.let { candyViewModel.getDessertById(it) }
 
-//    LAST TRY:
-//    var singleCandy by remember { mutableStateOf(CandyItem) }
-//    LaunchedEffect(Unit) {
-//        val result = candyViewModel.getDessertDetailsById(id)
-//        singleCandy = result
-//    }
+    if (item != null) {
+        DetailsScreenContent(
+            candyName = item.name,
+            photoUrl = item.imageUrl,
+            navController = navController,
+            detailsViewModel = candyViewModel
+        )
+    }
 //    DetailsScreenContent(
-//        candyName = singleCandy.,
-//        photoUrl = "https://www.themealdb.com/images/media/meals/xqvyqr1511638875.jpg",
+//        candyName = "SAMPLE NAME",
+//        photoUrl = "https://www.themealdb.com/images/media/meals/wvpsxx1468256321.jpg",
 //        navController = navController,
-//        shopViewModel = candyViewModel
+//        detailsViewModel = candyViewModel
 //    )
-
-    DetailsScreenContent(
-        candyName = "Sample one",
-        photoUrl = "https://www.themealdb.com/images/media/meals/xqvyqr1511638875.jpg",
-        navController = navController,
-        shopViewModel = candyViewModel
-    )
 }
 
 @Preview(showBackground = true)

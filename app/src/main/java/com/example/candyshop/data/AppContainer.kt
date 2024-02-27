@@ -13,7 +13,6 @@ interface AppContainer {
 class DefaultAppContainer : AppContainer {
     private val baseUrl = "https://www.themealdb.com/api/json/v1/1/"
 
-
     // Use the Retrofit builder to build a retrofit object using a kotlinx.serialization converter
     private val retrofit = Retrofit.Builder()
         .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
