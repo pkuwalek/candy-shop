@@ -11,8 +11,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             CandyShopTheme {
-//                Navigation()
-                CandyShopMain()
+                Navigation()
             }
         }
     }

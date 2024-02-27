@@ -24,7 +24,6 @@ sealed interface CandyUiState {
     object Loading : CandyUiState
 }
 
-
 class ShopViewModel(private val candyItemsRepository: CandyItemsRepository) : ViewModel() {
     var textFieldInput by mutableStateOf("")
         private set
@@ -50,6 +49,10 @@ class ShopViewModel(private val candyItemsRepository: CandyItemsRepository) : Vi
         }
     }
 
+    suspend fun getDessertDetailsById(candyId: Int?): CandyItem? {
+        return candyItemsRepository.getCandyItems().meals.firstOrNull { candyId == it.id.toInt() }
+    }
+
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
@@ -59,6 +62,7 @@ class ShopViewModel(private val candyItemsRepository: CandyItemsRepository) : Vi
             }
         }
     }
+
     fun updateTextField(userInput: String) {
         textFieldInput = userInput
     }

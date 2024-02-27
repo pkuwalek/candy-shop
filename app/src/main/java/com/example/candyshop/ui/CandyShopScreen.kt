@@ -47,35 +47,33 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.candyshop.network.CandyItem
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
+import com.example.candyshop.R
+import com.example.candyshop.Screen
+import com.example.candyshop.ui.theme.CandyShopTheme
+import com.example.candyshop.utils.bounceClickWithColorRipple
+import kotlinx.coroutines.launch
+import java.text.NumberFormat
 
-//import androidx.navigation.NavController
-//import androidx.navigation.compose.rememberNavController
-//import com.example.candyshop.R
-//import com.example.candyshop.Screen
-//import com.example.candyshop.data.ContentItem
-//import com.example.candyshop.data.content
-//import com.example.candyshop.ui.theme.CandyShopTheme
-//import com.example.candyshop.utils.bounceClickWithColorRipple
-//import kotlinx.coroutines.launch
-//import java.text.NumberFormat
-
-//@Composable
-//fun SmallCircleImage(imageId: Int) {
-//    Image(
-//        painter = painterResource(id = imageId),
-//        contentDescription = null,
-//        contentScale = ContentScale.Crop,
-//        modifier = Modifier
-//            .size(dimensionResource(id = R.dimen.image_size))
-//            .border(
-//                dimensionResource(id = R.dimen.border_xs),
-//                MaterialTheme.colorScheme.onPrimaryContainer,
-//                CircleShape
-//            )
-//            .padding(dimensionResource(id = R.dimen.border_xs))
-//            .clip(CircleShape)
-//    )
-//}
+@Composable
+fun SmallCircleImage(imageUrl: String) {
+    AsyncImage(
+        model = imageUrl,
+        contentDescription = "dessert image",
+        contentScale = ContentScale.Crop,
+        modifier = Modifier
+            .size(dimensionResource(id = R.dimen.image_size))
+            .border(
+                dimensionResource(id = R.dimen.border_xs),
+                MaterialTheme.colorScheme.onPrimaryContainer,
+                CircleShape
+            )
+            .padding(dimensionResource(id = R.dimen.border_xs))
+            .clip(CircleShape)
+    )
+}
 //
 //@Composable
 //fun LazyListState.isScrollingUp(): Boolean {
@@ -114,75 +112,82 @@ import com.example.candyshop.network.CandyItem
 //        }
 //    }
 //}
-//
-//@Composable
-//fun CandyCard(candy: ContentItem, navController: NavController, modifier: Modifier = Modifier) {
-//    Card(
-//        modifier = modifier
-//            .fillMaxWidth()
-//            .bounceClickWithColorRipple(
-//                color = MaterialTheme.colorScheme.surfaceTint,
-//                onClick = { navController.navigate(Screen.DetailsScreen.withArgs(candy.id)) }
-//            )
-//    ) {
-//        Row(
-//            modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)),
-//            verticalAlignment = Alignment.CenterVertically
-//        ) {
-//            SmallCircleImage(imageId = candy.image)
-//            Column(
-//                modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_medium))
-//            ) {
-//                Text(
-//                    text = candy.name,
-//                    style = MaterialTheme.typography.titleLarge,
-//                    color = MaterialTheme.colorScheme.onPrimaryContainer
-//                )
-//                Text(
+
+@Composable
+fun CandyCard(
+    id: String,
+    candyName: String,
+    photoUrl: String,
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .bounceClickWithColorRipple(
+                color = MaterialTheme.colorScheme.surfaceTint,
+                onClick = { navController.navigate(Screen.DetailsScreen.withArgs(id.toInt())) }
+            )
+    ) {
+        Row(
+            modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            SmallCircleImage(imageUrl = photoUrl)
+            Column(
+                modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_medium))
+            ) {
+                Text(
+                    text = candyName,
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+                Text(
 //                    text = stringResource(id = R.string.price, NumberFormat.getCurrencyInstance().format(candy.price)),
-//                    style = MaterialTheme.typography.bodyLarge,
-//                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-//                    modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_small))
-//                )
-//            }
-//        }
-//    }
-//}
-//
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun TopLogoBar(modifier: Modifier = Modifier) {
-//    CenterAlignedTopAppBar(
-//        colors = TopAppBarDefaults.topAppBarColors(
-//            containerColor = MaterialTheme.colorScheme.primaryContainer,
-//            titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-//        ),
-//        title = {
-//            Row(
-//                verticalAlignment = Alignment.CenterVertically,
-//                modifier = modifier
-//            ) {
-//                Icon(
-//                    painter = painterResource(id = R.drawable.icecream_icon),
-//                    contentDescription = "ice cream icon",
-//                    tint = MaterialTheme.colorScheme.onBackground
-//                )
-//                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-//                Text(
-//                    text = stringResource(id = R.string.app_name).uppercase(),
-//                    style = MaterialTheme.typography.headlineMedium,
-//                    color = MaterialTheme.colorScheme.onBackground
-//                )
-//                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-//                Icon(
-//                    painter = painterResource(id = R.drawable.icecream_icon),
-//                    contentDescription = "ice cream icon",
-//                    tint = MaterialTheme.colorScheme.onBackground
-//                )
-//            }
-//        }
-//    )
-//}
+                    text = "price: 10 USD",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_small))
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TopLogoBar(modifier: Modifier = Modifier) {
+    CenterAlignedTopAppBar(
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        ),
+        title = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = modifier
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.icecream_icon),
+                    contentDescription = "ice cream icon",
+                    tint = MaterialTheme.colorScheme.onBackground
+                )
+                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                Text(
+                    text = stringResource(id = R.string.app_name).uppercase(),
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                Icon(
+                    painter = painterResource(id = R.drawable.icecream_icon),
+                    contentDescription = "ice cream icon",
+                    tint = MaterialTheme.colorScheme.onBackground
+                )
+            }
+        }
+    )
+}
 
 @Composable
 fun LoadingScreen(modifier: Modifier = Modifier) {
@@ -195,55 +200,32 @@ fun ErrorScreen(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ResultScreen(items: List<CandyItem>, modifier: Modifier = Modifier) {
-
-    LazyColumn {
-        for (item in items) {
-            item {
-                Text(item.name)
-            }
-        }
-    }
-}
-
-@Composable
-fun CandyShopMain(
-//    candyUiState: CandyUiState,
-//    navController: NavController,
-//    candies: List<ContentItem>
-) {
-    val candyViewModel: ShopViewModel = viewModel(factory = ShopViewModel.Factory)
-    val candyUiState = candyViewModel.candyUiState
-
+fun ResultScreen(items: List<CandyItem>, navController: NavController) {
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     val showButton by remember { derivedStateOf { listState.firstVisibleItemIndex > 0 } }
 
-    when (candyUiState) {
-        is CandyUiState.Loading -> LoadingScreen(modifier = Modifier.fillMaxWidth())
-        is CandyUiState.Success -> ResultScreen(candyUiState.items, modifier = Modifier.fillMaxWidth())
-        is CandyUiState.Error -> ErrorScreen(modifier = Modifier.fillMaxWidth())
-    }
-
-//    Scaffold(
-//        topBar = {
-//            TopLogoBar()
-//        }
-//    ) {
-//        LazyColumn(
-//            state = listState,
-//            contentPadding = it
-//        ) {
-//            for (item in candies) {
-//                item {
-//                    CandyCard(
-//                        candy = item,
-//                        navController = navController,
-//                        modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small))
-//                    )
-//                }
-//            }
-//        }
+    Scaffold(
+        topBar = {
+            TopLogoBar()
+        }
+    ) {
+        LazyColumn(
+            state = listState,
+            contentPadding = it
+        ) {
+            for (item in items) {
+                item {
+                    CandyCard(
+                        id = item.id,
+                        candyName = item.name,
+                        photoUrl = item.imageUrl,
+                        navController = navController,
+                        modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small))
+                    )
+                }
+            }
+        }
 //        AnimatedVisibility(
 //            visible = !listState.isScrollingUp(),
 //            enter = fadeIn(),
@@ -255,7 +237,18 @@ fun CandyShopMain(
 //                }
 //            }
 //        }
-//    }
+    }
+}
+
+@Composable
+fun CandyShopMain(navController: NavController) {
+    val candyViewModel: ShopViewModel = viewModel(factory = ShopViewModel.Factory)
+
+    when (val candyUiState = candyViewModel.candyUiState) {
+        is CandyUiState.Loading -> LoadingScreen(modifier = Modifier.fillMaxWidth())
+        is CandyUiState.Success -> ResultScreen(candyUiState.items, navController = navController)
+        is CandyUiState.Error -> ErrorScreen(modifier = Modifier.fillMaxWidth())
+    }
 }
 
 //@Preview(showBackground = true)
