@@ -1,7 +1,5 @@
 package com.example.candyshop.ui
 
-import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -33,9 +31,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
@@ -97,7 +92,7 @@ fun ShoppingCartAlert(
         dismissButton = {
             TextButton(
                 onClick = {
-//                    detailsViewModel.showCart = false
+                    detailsViewModel.showCart = false
                 }
             ) {
                 Text(text = "Close")
@@ -140,7 +135,7 @@ fun TopBar(
         actions = {
             IconButton(
                 onClick = {
-//                    detailsViewModel.showCart = true
+                    detailsViewModel.showCart = true
                 }
             ) {
                 Icon(
@@ -149,9 +144,9 @@ fun TopBar(
                     tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
-//            if (detailsViewModel.showCart) {
-//                ShoppingCartAlert()
-//            }
+            if (detailsViewModel.showCart) {
+                ShoppingCartAlert()
+            }
         },
     )
 }
@@ -161,7 +156,7 @@ fun DetailsScreenContent(
     candyName: String,
     photoUrl: String,
     navController: NavController,
-    detailsViewModel: CandyShopViewModel
+    shopViewModel: CandyShopViewModel
 ) {
     val focusManager = LocalFocusManager.current
     Scaffold(
@@ -214,14 +209,14 @@ fun DetailsScreenContent(
             }
             Column {
                 QuantityTextField(
-                    textFieldInput = detailsViewModel.textFieldInput,
-                    onTextFieldInputChanged = { detailsViewModel.updateTextField(it) }
+                    textFieldInput = shopViewModel.textFieldInput,
+                    onTextFieldInputChanged = { shopViewModel.updateTextField(it) }
                 )
                 Spacer(Modifier.size(dimensionResource(id = R.dimen.padding_small)))
                 Button(
                     onClick = {
 //                            shopViewModel.addToCart(candyItem)
-//                            shopViewModel.updateTextField("")
+                            shopViewModel.updateTextField("")
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.tertiaryContainer,
@@ -260,15 +255,9 @@ fun DetailsScreen(
             candyName = item.name,
             photoUrl = item.imageUrl,
             navController = navController,
-            detailsViewModel = candyViewModel
+            shopViewModel = candyViewModel
         )
     }
-//    DetailsScreenContent(
-//        candyName = "SAMPLE NAME",
-//        photoUrl = "https://www.themealdb.com/images/media/meals/wvpsxx1468256321.jpg",
-//        navController = navController,
-//        detailsViewModel = candyViewModel
-//    )
 }
 
 @Preview(showBackground = true)

@@ -30,7 +30,7 @@ class CandyShopViewModel(private val candyItemsRepository: CandyItemsRepository)
     var candyUiState: CandyUiState by mutableStateOf(CandyUiState.Loading)
         private set
 
-    var allDesserts: List<CandyItem> = listOf()
+    private var allDesserts: List<CandyItem> = listOf()
 
     fun updateTextField(userInput: String) {
         textFieldInput = userInput
@@ -49,7 +49,6 @@ class CandyShopViewModel(private val candyItemsRepository: CandyItemsRepository)
             } catch (e: IOException) {
                 CandyUiState.Error
             }
-
         }
     }
 
@@ -64,4 +63,18 @@ class CandyShopViewModel(private val candyItemsRepository: CandyItemsRepository)
             }
         }
     }
+
+//    fun addToCart(candyItem: ContentItem?) {
+//        if (textFieldInput != "") {
+//            val item = candyItem?.let {
+//                CartItem(candyId = candyItem.id,
+//                    candyName = candyItem.name,
+//                    candyPrice = it.price,
+//                    candyQuantity = textFieldInput.toInt())
+//            }
+//            if (item != null) {
+//                _shoppingCartItems.add(item)
+//            }
+//        }
+//    }
 }
