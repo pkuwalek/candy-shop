@@ -49,8 +49,10 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.candyshop.R
 import com.example.candyshop.Screen
+import com.example.candyshop.data.CandyUiState
 import com.example.candyshop.utils.bounceClickWithColorRipple
 import kotlinx.coroutines.launch
+import java.text.NumberFormat
 
 @Composable
 fun SmallCircleImage(imageUrl: String) {
@@ -113,6 +115,7 @@ fun CandyCard(
     id: String,
     candyName: String,
     photoUrl: String,
+    candyPrice: Int,
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
@@ -138,8 +141,8 @@ fun CandyCard(
                     color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
                 Text(
-//                    text = stringResource(id = R.string.price, NumberFormat.getCurrencyInstance().format(candy.price)),
-                    text = "price: 10 USD",
+                    text = stringResource(id = R.string.price, NumberFormat.getCurrencyInstance().format(candyPrice)),
+//                    text = "price: 10 USD",
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                     modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_small))
@@ -215,6 +218,7 @@ fun ResultScreen(items: List<CandyItem>, navController: NavController) {
                         id = item.id,
                         candyName = item.name,
                         photoUrl = item.imageUrl,
+                        candyPrice = item.price,
                         navController = navController,
                         modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small))
                     )

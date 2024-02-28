@@ -11,30 +11,14 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.candyshop.CandyApplication
 import com.example.candyshop.data.CandyItemsRepository
-import com.example.candyshop.network.CandyItem
+import com.example.candyshop.data.CandyUiState
+import com.example.candyshop.database.TempDatabase
 import kotlinx.coroutines.launch
 import java.io.IOException
 
-sealed interface CandyUiState {
-    data class Success(val items: List<CandyItem>) : CandyUiState
-    object Error : CandyUiState
-    object Loading : CandyUiState
-}
-
 class CandyShopViewModel(private val candyItemsRepository: CandyItemsRepository) : ViewModel() {
-    var textFieldInput by mutableStateOf("")
-        private set
-    var showCart by mutableStateOf(false)
-//    private val _shoppingCartItems = mutableStateListOf<CartItem>()
-//    val shoppingCartItems: List<CartItem> = _shoppingCartItems
     var candyUiState: CandyUiState by mutableStateOf(CandyUiState.Loading)
         private set
-
-    private var allDesserts: List<CandyItem> = listOf()
-
-    fun updateTextField(userInput: String) {
-        textFieldInput = userInput
-    }
 
     init {
         getDessertDetails()
@@ -44,15 +28,13 @@ class CandyShopViewModel(private val candyItemsRepository: CandyItemsRepository)
         viewModelScope.launch {
             try {
                 val listResult = candyItemsRepository.getCandyItems()
-                candyUiState =CandyUiState.Success(listResult.meals)
-                allDesserts = listResult.meals
+                candyUiState = CandyUiState.Success(listResult.meals)
+                TempDatabase.allDesserts.addAll(listResult.meals)
             } catch (e: IOException) {
                 CandyUiState.Error
             }
         }
     }
-
-    fun getDessertById(dessertId: Int): CandyItem? = allDesserts.firstOrNull { dessertId == it.id.toInt() }
 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
@@ -63,18 +45,4 @@ class CandyShopViewModel(private val candyItemsRepository: CandyItemsRepository)
             }
         }
     }
-
-//    fun addToCart(candyItem: ContentItem?) {
-//        if (textFieldInput != "") {
-//            val item = candyItem?.let {
-//                CartItem(candyId = candyItem.id,
-//                    candyName = candyItem.name,
-//                    candyPrice = it.price,
-//                    candyQuantity = textFieldInput.toInt())
-//            }
-//            if (item != null) {
-//                _shoppingCartItems.add(item)
-//            }
-//        }
-//    }
 }

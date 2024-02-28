@@ -16,5 +16,6 @@ data class CandyItem (
     @SerialName(value = "strMealThumb")
     val imageUrl: String,
     @SerialName(value = "idMeal")
-    val id: String
+    val id: String,
+    val price: Int = 10
 )

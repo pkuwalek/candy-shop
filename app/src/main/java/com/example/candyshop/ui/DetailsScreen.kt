@@ -31,6 +31,9 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
@@ -50,6 +53,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.candyshop.R
 import com.example.candyshop.ui.theme.CandyShopTheme
+import java.text.NumberFormat
 
 @Composable
 private fun QuantityTextField(
@@ -80,7 +84,7 @@ private fun QuantityTextField(
 @Composable
 fun ShoppingCartAlert(
     modifier: Modifier = Modifier,
-    detailsViewModel: CandyShopViewModel = viewModel()
+    detailsViewModel: DetailsScreenViewModel = viewModel()
 ) {
     AlertDialog(
         onDismissRequest = { },
@@ -110,7 +114,7 @@ fun ShoppingCartAlert(
 @Composable
 fun TopBar(
     navController: NavController,
-    detailsViewModel: CandyShopViewModel = viewModel()
+    detailsViewModel: DetailsScreenViewModel = viewModel()
 ) {
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
@@ -147,7 +151,7 @@ fun TopBar(
             if (detailsViewModel.showCart) {
                 ShoppingCartAlert()
             }
-        },
+        }
     )
 }
 
@@ -155,8 +159,9 @@ fun TopBar(
 fun DetailsScreenContent(
     candyName: String,
     photoUrl: String,
+    candyPrice: Int,
     navController: NavController,
-    shopViewModel: CandyShopViewModel
+    shopViewModel: DetailsScreenViewModel
 ) {
     val focusManager = LocalFocusManager.current
     Scaffold(
@@ -199,11 +204,10 @@ fun DetailsScreenContent(
                     modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_small))
                 )
                 Text(
-//                        text = stringResource(
-//                            id = R.string.price,
-//                            NumberFormat.getCurrencyInstance().format(candyItem.price)
-//                        ),
-                    text = "PRICE: 10 USD",
+                        text = stringResource(
+                            id = R.string.price,
+                            NumberFormat.getCurrencyInstance().format(candyPrice)
+                        ),
                     style = MaterialTheme.typography.labelLarge
                 )
             }
@@ -247,23 +251,29 @@ fun DetailsScreen(
     id: Int?,
     navController: NavController
 ) {
-    val candyViewModel: CandyShopViewModel = viewModel(factory = CandyShopViewModel.Factory)
-    val item = id?.let { candyViewModel.getDessertById(it) }
-
-    if (item != null) {
+    val detailsViewModel: DetailsScreenViewModel = viewModel(factory = DetailsScreenViewModel.Factory)
+    val item by remember { mutableStateOf(detailsViewModel.getDessertById(id)) }
+    item?.let {
         DetailsScreenContent(
-            candyName = item.name,
-            photoUrl = item.imageUrl,
+            candyName = it.name,
+            photoUrl = it.imageUrl,
+            candyPrice = it.price,
             navController = navController,
-            shopViewModel = candyViewModel
+            shopViewModel = detailsViewModel
         )
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun DetailsScreenPreview() {
-    CandyShopTheme {
-        DetailsScreen(id = 52894, rememberNavController())
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun DetailsScreenPreview() {
+//    CandyShopTheme {
+//        DetailsScreenContent(
+//            candyName = "Rock Cakes",
+//            photoUrl = "https://www.themealdb.com/images/media/meals/tqrrsq1511723764.jpg",
+//            candyPrice = 10,
+//            navController = rememberNavController(),
+//            shopViewModel =
+//        )
+//    }
+//}
