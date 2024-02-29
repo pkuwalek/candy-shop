@@ -1,7 +1,6 @@
 package com.example.candyshop.ui
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -32,13 +31,15 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -49,8 +50,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.example.candyshop.R
-import com.example.candyshop.data.getCandyDetailsById
 import com.example.candyshop.ui.theme.CandyShopTheme
 import java.text.NumberFormat
 
@@ -83,7 +84,7 @@ private fun QuantityTextField(
 @Composable
 fun ShoppingCartAlert(
     modifier: Modifier = Modifier,
-    shopViewModel: ShopViewModel = viewModel()
+    detailsViewModel: DetailsScreenViewModel = viewModel()
 ) {
     AlertDialog(
         onDismissRequest = { },
@@ -95,7 +96,7 @@ fun ShoppingCartAlert(
         dismissButton = {
             TextButton(
                 onClick = {
-                    shopViewModel.showCart = false
+                    detailsViewModel.showCart = false
                 }
             ) {
                 Text(text = "Close")
@@ -113,7 +114,7 @@ fun ShoppingCartAlert(
 @Composable
 fun TopBar(
     navController: NavController,
-    shopViewModel: ShopViewModel = viewModel()
+    detailsViewModel: DetailsScreenViewModel = viewModel()
 ) {
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
@@ -137,7 +138,9 @@ fun TopBar(
         },
         actions = {
             IconButton(
-                onClick = { shopViewModel.showCart = true }
+                onClick = {
+                    detailsViewModel.showCart = true
+                }
             ) {
                 Icon(
                     imageVector = Icons.Rounded.ShoppingCart,
@@ -145,20 +148,21 @@ fun TopBar(
                     tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
-            if (shopViewModel.showCart) {
+            if (detailsViewModel.showCart) {
                 ShoppingCartAlert()
             }
-        },
+        }
     )
 }
 
 @Composable
-fun DetailsScreen(
-    id: Int?,
+fun DetailsScreenContent(
+    candyName: String,
+    photoUrl: String,
+    candyPrice: Int,
     navController: NavController,
-    shopViewModel: ShopViewModel = viewModel()
+    shopViewModel: DetailsScreenViewModel
 ) {
-    val candyItem = getCandyDetailsById(id)
     val focusManager = LocalFocusManager.current
     Scaffold(
         topBar = { TopBar(navController) }
@@ -175,79 +179,101 @@ fun DetailsScreen(
                 },
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            if (candyItem != null) {
-                Column {
-                    Image(
-                        painter = painterResource(id = candyItem.image),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(max = 250.dp)
-                            .border(
-                                dimensionResource(id = R.dimen.border_m),
-                                MaterialTheme.colorScheme.primary
-                            )
-                    )
-                    Text(
-                        text = stringResource(id = R.string.about, candyItem.name),
-                        style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.padding(top = dimensionResource(id = R.dimen.padding_small))
-                    )
-                    Text(
-                        text = stringResource(id = R.string.about_candy_placeholder),
-                        style = MaterialTheme.typography.bodyMedium,
-                        textAlign = TextAlign.Justify,
-                        modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_small))
-                    )
-                    Text(
+            Column {
+                AsyncImage(
+                    model = photoUrl,
+                    contentDescription = "dessert image",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(max = 250.dp)
+                        .border(
+                            dimensionResource(id = R.dimen.border_m),
+                            MaterialTheme.colorScheme.primary
+                        )
+                )
+                Text(
+                    text = stringResource(id = R.string.about, candyName),
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(top = dimensionResource(id = R.dimen.padding_small))
+                )
+                Text(
+                    text = stringResource(id = R.string.about_candy_placeholder),
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Justify,
+                    modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_small))
+                )
+                Text(
                         text = stringResource(
                             id = R.string.price,
-                            NumberFormat.getCurrencyInstance().format(candyItem.price)
+                            NumberFormat.getCurrencyInstance().format(candyPrice)
                         ),
-                        style = MaterialTheme.typography.labelLarge
-                    )
-                }
-                Column {
-                    QuantityTextField(
-                        textFieldInput = shopViewModel.textFieldInput,
-                        onTextFieldInputChanged = { shopViewModel.updateTextField(it) }
-                    )
-                    Spacer(Modifier.size(dimensionResource(id = R.dimen.padding_small)))
-                    Button(
-                        onClick = {
-                            shopViewModel.addToCart(candyItem)
+                    style = MaterialTheme.typography.labelLarge
+                )
+            }
+            Column {
+                QuantityTextField(
+                    textFieldInput = shopViewModel.textFieldInput,
+                    onTextFieldInputChanged = { shopViewModel.updateTextField(it) }
+                )
+                Spacer(Modifier.size(dimensionResource(id = R.dimen.padding_small)))
+                Button(
+                    onClick = {
+//                            shopViewModel.addToCart(candyItem)
                             shopViewModel.updateTextField("")
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onTertiaryContainer
-                        ),
-                        border = BorderStroke(
-                            dimensionResource(id = R.dimen.border_xs),
-                            MaterialTheme.colorScheme.onTertiaryContainer
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        Icon(
-                            Icons.Rounded.ShoppingCart,
-                            contentDescription = "add to cart icon",
-                            tint = MaterialTheme.colorScheme.onTertiaryContainer
-                        )
-                        Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                        Text(stringResource(id = R.string.cart).uppercase())
-                    }
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                    ),
+                    border = BorderStroke(
+                        dimensionResource(id = R.dimen.border_xs),
+                        MaterialTheme.colorScheme.onTertiaryContainer
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Icon(
+                        Icons.Rounded.ShoppingCart,
+                        contentDescription = "add to cart icon",
+                        tint = MaterialTheme.colorScheme.onTertiaryContainer
+                    )
+                    Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                    Text(stringResource(id = R.string.cart).uppercase())
                 }
             }
         }
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun DetailsScreenPreview() {
-    CandyShopTheme {
-        DetailsScreen(id = 5, rememberNavController())
+fun DetailsScreen(
+    id: Int?,
+    navController: NavController
+) {
+    val detailsViewModel: DetailsScreenViewModel = viewModel(factory = DetailsScreenViewModel.Factory)
+    val item by remember { mutableStateOf(detailsViewModel.getDessertById(id)) }
+    item?.let {
+        DetailsScreenContent(
+            candyName = it.name,
+            photoUrl = it.imageUrl,
+            candyPrice = it.price,
+            navController = navController,
+            shopViewModel = detailsViewModel
+        )
     }
 }
+
+//@Preview(showBackground = true)
+//@Composable
+//fun DetailsScreenPreview() {
+//    CandyShopTheme {
+//        DetailsScreenContent(
+//            candyName = "Rock Cakes",
+//            photoUrl = "https://www.themealdb.com/images/media/meals/tqrrsq1511723764.jpg",
+//            candyPrice = 10,
+//            navController = rememberNavController(),
+//            shopViewModel =
+//        )
+//    }
+//}

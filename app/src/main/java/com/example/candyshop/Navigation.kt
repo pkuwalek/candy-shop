@@ -8,7 +8,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.candyshop.data.content
 import com.example.candyshop.ui.CandyShopMain
 import com.example.candyshop.ui.DetailsScreen
 
@@ -37,7 +36,7 @@ fun Navigation() {
         }
     ) {
         composable(route = Screen.MainScreen.route) {
-            CandyShopMain(navController = navController, content)
+            CandyShopMain(navController = navController)
         }
         composable(
             route = Screen.DetailsScreen.route + "/{id}",

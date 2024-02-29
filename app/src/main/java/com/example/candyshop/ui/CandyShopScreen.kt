@@ -3,7 +3,6 @@ package com.example.candyshop.ui
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,24 +42,23 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.candyshop.network.CandyItem
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.example.candyshop.R
 import com.example.candyshop.Screen
-import com.example.candyshop.data.ContentItem
-import com.example.candyshop.data.content
-import com.example.candyshop.ui.theme.CandyShopTheme
+import com.example.candyshop.data.CandyUiState
 import com.example.candyshop.utils.bounceClickWithColorRipple
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 
 @Composable
-fun SmallCircleImage(imageId: Int) {
-    Image(
-        painter = painterResource(id = imageId),
-        contentDescription = null,
+fun SmallCircleImage(imageUrl: String) {
+    AsyncImage(
+        model = imageUrl,
+        contentDescription = "dessert image",
         contentScale = ContentScale.Crop,
         modifier = Modifier
             .size(dimensionResource(id = R.dimen.image_size))
@@ -113,30 +111,38 @@ fun ScrollToTop(scrollToTop: () -> Unit) {
 }
 
 @Composable
-fun CandyCard(candy: ContentItem, navController: NavController, modifier: Modifier = Modifier) {
+fun CandyCard(
+    id: String,
+    candyName: String,
+    photoUrl: String,
+    candyPrice: Int,
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
     Card(
         modifier = modifier
             .fillMaxWidth()
             .bounceClickWithColorRipple(
                 color = MaterialTheme.colorScheme.surfaceTint,
-                onClick = { navController.navigate(Screen.DetailsScreen.withArgs(candy.id)) }
+                onClick = { navController.navigate(Screen.DetailsScreen.withArgs(id.toInt())) }
             )
     ) {
         Row(
             modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            SmallCircleImage(imageId = candy.image)
+            SmallCircleImage(imageUrl = photoUrl)
             Column(
                 modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_medium))
             ) {
                 Text(
-                    text = candy.name,
+                    text = candyName,
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
                 Text(
-                    text = stringResource(id = R.string.price, NumberFormat.getCurrencyInstance().format(candy.price)),
+                    text = stringResource(id = R.string.price, NumberFormat.getCurrencyInstance().format(candyPrice)),
+//                    text = "price: 10 USD",
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                     modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_small))
@@ -182,10 +188,21 @@ fun TopLogoBar(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun CandyShopMain(navController: NavController, candies: List<ContentItem>) {
+fun LoadingScreen() {
+    Text("We are in a loading screen.")
+}
+
+@Composable
+fun ErrorScreen() {
+    Text("We are in an Error Screen.")
+}
+
+@Composable
+fun ResultScreen(items: List<CandyItem>, navController: NavController) {
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     val showButton by remember { derivedStateOf { listState.firstVisibleItemIndex > 0 } }
+
     Scaffold(
         topBar = {
             TopLogoBar()
@@ -195,10 +212,13 @@ fun CandyShopMain(navController: NavController, candies: List<ContentItem>) {
             state = listState,
             contentPadding = it
         ) {
-            for (item in candies) {
+            for (item in items) {
                 item {
                     CandyCard(
-                        candy = item,
+                        id = item.id,
+                        candyName = item.name,
+                        photoUrl = item.imageUrl,
+                        candyPrice = item.price,
                         navController = navController,
                         modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small))
                     )
@@ -219,10 +239,21 @@ fun CandyShopMain(navController: NavController, candies: List<ContentItem>) {
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun CandyShopPreview() {
-    CandyShopTheme {
-        CandyShopMain(rememberNavController(), content.take(6))
+fun CandyShopMain(navController: NavController) {
+    val candyViewModel: CandyShopViewModel = viewModel(factory = CandyShopViewModel.Factory)
+
+    when (val candyUiState = candyViewModel.candyUiState) {
+        is CandyUiState.Loading -> LoadingScreen()
+        is CandyUiState.Success -> ResultScreen(candyUiState.items, navController = navController)
+        is CandyUiState.Error -> ErrorScreen()
     }
 }
+
+//@Preview(showBackground = true)
+//@Composable
+//fun CandyShopPreview() {
+//    CandyShopTheme {
+//        CandyShopMain(rememberNavController(), content.take(6))
+//    }
+//}
