@@ -124,8 +124,7 @@ fun CandyCard(
             .fillMaxWidth()
             .bounceClickWithColorRipple(
                 color = MaterialTheme.colorScheme.surfaceTint,
-//                onClick = { navController.navigate(Screen.DetailsScreen.withArgs(id.toInt())) }
-                onClick = { }
+                onClick = { navController.navigate(Screen.DetailsScreen.withArgs(id.toInt())) }
             )
     ) {
         Row(
@@ -143,7 +142,6 @@ fun CandyCard(
                 )
                 Text(
                     text = stringResource(id = R.string.price, NumberFormat.getCurrencyInstance().format(candyPrice)),
-//                    text = "price: 10 USD",
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                     modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_small))
@@ -191,11 +189,6 @@ fun TopLogoBar(modifier: Modifier = Modifier) {
 @Composable
 fun LoadingScreen() {
     Text("We are in a loading screen.")
-}
-
-@Composable
-fun ErrorScreen() {
-    Text("We are in an Error Screen.")
 }
 
 @Composable

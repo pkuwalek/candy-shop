@@ -46,8 +46,8 @@ fun Navigation() {
                     nullable = false
                 }
             )
-        ) { entry ->
-            DetailsScreen(id = entry.arguments?.getInt("id"), navController = navController)
+        ) {
+            DetailsScreen(navController)
         }
     }
 }
