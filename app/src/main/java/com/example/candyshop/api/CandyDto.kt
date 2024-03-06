@@ -1,21 +1,20 @@
-package com.example.candyshop.network
+package com.example.candyshop.api
 
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Meals (
-    val meals: List<CandyItem>
+data class CandyListDto (
+    val meals: List<CandyDto>
 )
 
 @Serializable
-data class CandyItem (
+data class CandyDto (
     @SerialName(value = "strMeal")
-    val name: String,
+    val name: String?,
     @SerialName(value = "strMealThumb")
-    val imageUrl: String,
+    val imageUrl: String?,
     @SerialName(value = "idMeal")
-    val id: String,
+    val id: String?,
     val price: Int = 10
 )

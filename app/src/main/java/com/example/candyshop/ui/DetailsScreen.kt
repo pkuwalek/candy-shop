@@ -55,213 +55,213 @@ import com.example.candyshop.R
 import com.example.candyshop.ui.theme.CandyShopTheme
 import java.text.NumberFormat
 
-@Composable
-private fun QuantityTextField(
-    textFieldInput: String,
-    onTextFieldInputChanged: (String) -> Unit
-) {
-    TextField(
-        value = textFieldInput,
-        onValueChange = onTextFieldInputChanged,
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-        label = { Text("Choose quantity") },
-        singleLine = true,
-        textStyle = TextStyle(
-            color = MaterialTheme.colorScheme.onSecondaryContainer,
-            fontWeight = FontWeight.Bold),
-        shape = CircleShape,
-        colors = TextFieldDefaults.colors(
-            unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-            focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-            unfocusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
-            focusedLabelColor = MaterialTheme.colorScheme.onSecondaryContainer,
-            unfocusedIndicatorColor = Color.Transparent,
-            focusedIndicatorColor = Color.Transparent),
-        modifier = Modifier.fillMaxWidth()
-    )
-}
-
-@Composable
-fun ShoppingCartAlert(
-    modifier: Modifier = Modifier,
-    detailsViewModel: DetailsScreenViewModel = viewModel()
-) {
-    AlertDialog(
-        onDismissRequest = { },
-        title = { Text(text = "Your shopping cart") },
-        text = {
-            Text("Here the items will be displayed.")
-        },
-        modifier = modifier,
-        dismissButton = {
-            TextButton(
-                onClick = {
-                    detailsViewModel.showCart = false
-                }
-            ) {
-                Text(text = "Close")
-            }
-        },
-        confirmButton = {
-            TextButton(onClick = { }) {
-                Text(text = "Checkout")
-            }
-        }
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TopBar(
-    navController: NavController,
-    detailsViewModel: DetailsScreenViewModel = viewModel()
-) {
-    CenterAlignedTopAppBar(
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-        ),
-        title = {
-            Text(
-                "Shop",
-                maxLines = 1
-            )
-        },
-        navigationIcon = {
-            IconButton(onClick = { navController.popBackStack() }) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                    contentDescription = "Arrow back",
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            }
-        },
-        actions = {
-            IconButton(
-                onClick = {
-                    detailsViewModel.showCart = true
-                }
-            ) {
-                Icon(
-                    imageVector = Icons.Rounded.ShoppingCart,
-                    contentDescription = "Shopping cart icon",
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            }
-            if (detailsViewModel.showCart) {
-                ShoppingCartAlert()
-            }
-        }
-    )
-}
-
-@Composable
-fun DetailsScreenContent(
-    candyName: String,
-    photoUrl: String,
-    candyPrice: Int,
-    navController: NavController,
-    shopViewModel: DetailsScreenViewModel
-) {
-    val focusManager = LocalFocusManager.current
-    Scaffold(
-        topBar = { TopBar(navController) }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(dimensionResource(id = R.dimen.padding_medium))
-                .pointerInput(Unit) {
-                    detectTapGestures(
-                        onTap = { focusManager.clearFocus() }
-                    )
-                },
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            Column {
-                AsyncImage(
-                    model = photoUrl,
-                    contentDescription = "dessert image",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(max = 250.dp)
-                        .border(
-                            dimensionResource(id = R.dimen.border_m),
-                            MaterialTheme.colorScheme.primary
-                        )
-                )
-                Text(
-                    text = stringResource(id = R.string.about, candyName),
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(top = dimensionResource(id = R.dimen.padding_small))
-                )
-                Text(
-                    text = stringResource(id = R.string.about_candy_placeholder),
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Justify,
-                    modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_small))
-                )
-                Text(
-                        text = stringResource(
-                            id = R.string.price,
-                            NumberFormat.getCurrencyInstance().format(candyPrice)
-                        ),
-                    style = MaterialTheme.typography.labelLarge
-                )
-            }
-            Column {
-                QuantityTextField(
-                    textFieldInput = shopViewModel.textFieldInput,
-                    onTextFieldInputChanged = { shopViewModel.updateTextField(it) }
-                )
-                Spacer(Modifier.size(dimensionResource(id = R.dimen.padding_small)))
-                Button(
-                    onClick = {
-//                            shopViewModel.addToCart(candyItem)
-                            shopViewModel.updateTextField("")
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onTertiaryContainer
-                    ),
-                    border = BorderStroke(
-                        dimensionResource(id = R.dimen.border_xs),
-                        MaterialTheme.colorScheme.onTertiaryContainer
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    Icon(
-                        Icons.Rounded.ShoppingCart,
-                        contentDescription = "add to cart icon",
-                        tint = MaterialTheme.colorScheme.onTertiaryContainer
-                    )
-                    Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                    Text(stringResource(id = R.string.cart).uppercase())
-                }
-            }
-        }
-    }
-}
+//@Composable
+//private fun QuantityTextField(
+//    textFieldInput: String,
+//    onTextFieldInputChanged: (String) -> Unit
+//) {
+//    TextField(
+//        value = textFieldInput,
+//        onValueChange = onTextFieldInputChanged,
+//        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+//        label = { Text("Choose quantity") },
+//        singleLine = true,
+//        textStyle = TextStyle(
+//            color = MaterialTheme.colorScheme.onSecondaryContainer,
+//            fontWeight = FontWeight.Bold),
+//        shape = CircleShape,
+//        colors = TextFieldDefaults.colors(
+//            unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+//            focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+//            unfocusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+//            focusedLabelColor = MaterialTheme.colorScheme.onSecondaryContainer,
+//            unfocusedIndicatorColor = Color.Transparent,
+//            focusedIndicatorColor = Color.Transparent),
+//        modifier = Modifier.fillMaxWidth()
+//    )
+//}
+//
+//@Composable
+//fun ShoppingCartAlert(
+//    modifier: Modifier = Modifier,
+//    detailsViewModel: DetailsScreenViewModel = viewModel()
+//) {
+//    AlertDialog(
+//        onDismissRequest = { },
+//        title = { Text(text = "Your shopping cart") },
+//        text = {
+//            Text("Here the items will be displayed.")
+//        },
+//        modifier = modifier,
+//        dismissButton = {
+//            TextButton(
+//                onClick = {
+//                    detailsViewModel.showCart = false
+//                }
+//            ) {
+//                Text(text = "Close")
+//            }
+//        },
+//        confirmButton = {
+//            TextButton(onClick = { }) {
+//                Text(text = "Checkout")
+//            }
+//        }
+//    )
+//}
+//
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//fun TopBar(
+//    navController: NavController,
+//    detailsViewModel: DetailsScreenViewModel = viewModel()
+//) {
+//    CenterAlignedTopAppBar(
+//        colors = TopAppBarDefaults.topAppBarColors(
+//            containerColor = MaterialTheme.colorScheme.primaryContainer,
+//            titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+//        ),
+//        title = {
+//            Text(
+//                "Shop",
+//                maxLines = 1
+//            )
+//        },
+//        navigationIcon = {
+//            IconButton(onClick = { navController.popBackStack() }) {
+//                Icon(
+//                    imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+//                    contentDescription = "Arrow back",
+//                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+//                )
+//            }
+//        },
+//        actions = {
+//            IconButton(
+//                onClick = {
+//                    detailsViewModel.showCart = true
+//                }
+//            ) {
+//                Icon(
+//                    imageVector = Icons.Rounded.ShoppingCart,
+//                    contentDescription = "Shopping cart icon",
+//                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+//                )
+//            }
+//            if (detailsViewModel.showCart) {
+//                ShoppingCartAlert()
+//            }
+//        }
+//    )
+//}
+//
+//@Composable
+//fun DetailsScreenContent(
+//    candyName: String,
+//    photoUrl: String,
+//    candyPrice: Int,
+//    navController: NavController,
+//    shopViewModel: DetailsScreenViewModel
+//) {
+//    val focusManager = LocalFocusManager.current
+//    Scaffold(
+//        topBar = { TopBar(navController) }
+//    ) { innerPadding ->
+//        Column(
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .padding(innerPadding)
+//                .padding(dimensionResource(id = R.dimen.padding_medium))
+//                .pointerInput(Unit) {
+//                    detectTapGestures(
+//                        onTap = { focusManager.clearFocus() }
+//                    )
+//                },
+//            verticalArrangement = Arrangement.SpaceBetween
+//        ) {
+//            Column {
+//                AsyncImage(
+//                    model = photoUrl,
+//                    contentDescription = "dessert image",
+//                    contentScale = ContentScale.Crop,
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .heightIn(max = 250.dp)
+//                        .border(
+//                            dimensionResource(id = R.dimen.border_m),
+//                            MaterialTheme.colorScheme.primary
+//                        )
+//                )
+//                Text(
+//                    text = stringResource(id = R.string.about, candyName),
+//                    style = MaterialTheme.typography.titleLarge,
+//                    modifier = Modifier.padding(top = dimensionResource(id = R.dimen.padding_small))
+//                )
+//                Text(
+//                    text = stringResource(id = R.string.about_candy_placeholder),
+//                    style = MaterialTheme.typography.bodyMedium,
+//                    textAlign = TextAlign.Justify,
+//                    modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_small))
+//                )
+//                Text(
+//                        text = stringResource(
+//                            id = R.string.price,
+//                            NumberFormat.getCurrencyInstance().format(candyPrice)
+//                        ),
+//                    style = MaterialTheme.typography.labelLarge
+//                )
+//            }
+//            Column {
+//                QuantityTextField(
+//                    textFieldInput = shopViewModel.textFieldInput,
+//                    onTextFieldInputChanged = { shopViewModel.updateTextField(it) }
+//                )
+//                Spacer(Modifier.size(dimensionResource(id = R.dimen.padding_small)))
+//                Button(
+//                    onClick = {
+////                            shopViewModel.addToCart(candyItem)
+//                            shopViewModel.updateTextField("")
+//                    },
+//                    colors = ButtonDefaults.buttonColors(
+//                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+//                        contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+//                    ),
+//                    border = BorderStroke(
+//                        dimensionResource(id = R.dimen.border_xs),
+//                        MaterialTheme.colorScheme.onTertiaryContainer
+//                    ),
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                ) {
+//                    Icon(
+//                        Icons.Rounded.ShoppingCart,
+//                        contentDescription = "add to cart icon",
+//                        tint = MaterialTheme.colorScheme.onTertiaryContainer
+//                    )
+//                    Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+//                    Text(stringResource(id = R.string.cart).uppercase())
+//                }
+//            }
+//        }
+//    }
+//}
 
 @Composable
 fun DetailsScreen(
     id: Int?,
     navController: NavController
 ) {
-    val detailsViewModel: DetailsScreenViewModel = viewModel(factory = DetailsScreenViewModel.Factory)
-    val item by remember { mutableStateOf(detailsViewModel.getDessertById(id)) }
-    item?.let {
-        DetailsScreenContent(
-            candyName = it.name,
-            photoUrl = it.imageUrl,
-            candyPrice = it.price,
-            navController = navController,
-            shopViewModel = detailsViewModel
-        )
-    }
+//    val detailsViewModel: DetailsScreenViewModel = viewModel(factory = DetailsScreenViewModel.Factory)
+//    val item by remember { mutableStateOf(detailsViewModel.getDessertById(id)) }
+//    item?.let {
+//        DetailsScreenContent(
+//            candyName = it.name,
+//            photoUrl = it.imageUrl,
+//            candyPrice = it.price,
+//            navController = navController,
+//            shopViewModel = detailsViewModel
+//        )
+//    }
 }
 
 //@Preview(showBackground = true)

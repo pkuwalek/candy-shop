@@ -10,7 +10,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.candyshop.CandyApplication
 import com.example.candyshop.database.TempDatabase
-import com.example.candyshop.network.CandyItem
+import com.example.candyshop.api.CandyDto
 
 class DetailsScreenViewModel(private val temporaryDb: TempDatabase) : ViewModel() {
     var textFieldInput by mutableStateOf("")
@@ -24,7 +24,7 @@ class DetailsScreenViewModel(private val temporaryDb: TempDatabase) : ViewModel(
         textFieldInput = userInput
     }
 
-    fun getDessertById(id: Int?): CandyItem? {
+    fun getDessertById(id: Int?): CandyDto? {
         return temporaryDb.findOne(id)
     }
 

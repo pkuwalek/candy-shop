@@ -1,12 +1,11 @@
 package com.example.candyshop.database
 
-import com.example.candyshop.network.CandyItem
+import com.example.candyshop.api.CandyDto
 
 object TempDatabase {
-    val allDesserts: MutableList<CandyItem> = mutableListOf()
+    val allDesserts: MutableList<CandyDto> = mutableListOf()
 
-    fun findOne(id: Int?): CandyItem? {
-        return allDesserts.firstOrNull { id == it.id.toInt() }
+    fun findOne(id: Int?): CandyDto? {
+        return allDesserts.firstOrNull { id == it.id?.toInt() }
     }
 }
-

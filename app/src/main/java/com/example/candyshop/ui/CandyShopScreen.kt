@@ -29,6 +29,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -43,13 +44,12 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.candyshop.network.CandyItem
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.candyshop.R
 import com.example.candyshop.Screen
-import com.example.candyshop.data.CandyUiState
+import com.example.candyshop.data.model.Candy
 import com.example.candyshop.utils.bounceClickWithColorRipple
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
@@ -124,7 +124,8 @@ fun CandyCard(
             .fillMaxWidth()
             .bounceClickWithColorRipple(
                 color = MaterialTheme.colorScheme.surfaceTint,
-                onClick = { navController.navigate(Screen.DetailsScreen.withArgs(id.toInt())) }
+//                onClick = { navController.navigate(Screen.DetailsScreen.withArgs(id.toInt())) }
+                onClick = { }
             )
     ) {
         Row(
@@ -198,7 +199,7 @@ fun ErrorScreen() {
 }
 
 @Composable
-fun ResultScreen(items: List<CandyItem>, navController: NavController) {
+fun ResultScreen(items: List<Candy>, navController: NavController) {
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     val showButton by remember { derivedStateOf { listState.firstVisibleItemIndex > 0 } }
@@ -241,13 +242,15 @@ fun ResultScreen(items: List<CandyItem>, navController: NavController) {
 
 @Composable
 fun CandyShopMain(navController: NavController) {
-    val candyViewModel: CandyShopViewModel = viewModel(factory = CandyShopViewModel.Factory)
-
-    when (val candyUiState = candyViewModel.candyUiState) {
-        is CandyUiState.Loading -> LoadingScreen()
-        is CandyUiState.Success -> ResultScreen(candyUiState.items, navController = navController)
-        is CandyUiState.Error -> ErrorScreen()
+    val candyShopViewModel = hiltViewModel<CandyShopViewModel>()
+    val candyState = candyShopViewModel.candyUiState.collectAsState().value
+    if (candyState.isLoading) {
+        LoadingScreen()
+    } else {
+        ResultScreen(items = candyState.dessertList, navController = navController)
     }
+
+
 }
 
 //@Preview(showBackground = true)
