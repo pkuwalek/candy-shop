@@ -4,6 +4,8 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
 
+
+// DAOs provide methods (queries)
 @Dao
 interface CandyDao {
     @Upsert

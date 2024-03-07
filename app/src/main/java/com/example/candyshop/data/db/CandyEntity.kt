@@ -3,6 +3,7 @@ package com.example.candyshop.data.db
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+// tables representation
 @Entity
 data class CandyEntity (
     val name: String,
@@ -11,5 +12,4 @@ data class CandyEntity (
 
     @PrimaryKey
     val id: String,
-
 )
