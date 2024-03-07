@@ -15,5 +15,5 @@ interface CandyDao {
     suspend fun getAllCandy() : List<CandyEntity>
 
     @Query("SELECT * FROM CandyEntity WHERE id = :id")
-    suspend fun getCandyById(id: Int) : CandyEntity
+    suspend fun getCandyById(id: Int) : CandyEntity?
 }

@@ -39,14 +39,10 @@ class CandyShopViewModel @Inject constructor(
                         result.data?.let { candyList ->
                             _candyUiState.update {
                                 it.copy(
+                                    isLoading = false,
                                     dessertList = candyUiState.value.dessertList + candyList
                                 )
                             }
-                        }
-                    }
-                    is Resource.Loading -> {
-                        _candyUiState.update {
-                            it.copy(isLoading = result.isLoading)
                         }
                     }
                 }

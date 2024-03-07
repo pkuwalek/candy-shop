@@ -25,7 +25,6 @@ class CandyItemsRepositoryImplementation @Inject constructor(
 ) : CandyItemsRepository {
     override suspend fun getCandyItems(forceFetchFromRemote: Boolean): Flow<Resource<List<Candy>>> {
         return flow {
-            emit(Resource.Loading(true))
             val localCandyList = candyDatabase.candyDao.getAllCandy()
             val shouldLoadLocalCandy = localCandyList.isNotEmpty() && !forceFetchFromRemote
 
@@ -33,7 +32,6 @@ class CandyItemsRepositoryImplementation @Inject constructor(
                 emit(Resource.Success(data = localCandyList.map { candyEntity ->
                     candyEntity.toCandy()
                 }))
-                emit(Resource.Loading(false))
                 return@flow
             }
 
@@ -68,15 +66,12 @@ class CandyItemsRepositoryImplementation @Inject constructor(
 
     override suspend fun getCandy(id: Int): Flow<Resource<Candy>> {
         return flow {
-            emit(Resource.Loading(true))
             val candyEntity = candyDatabase.candyDao.getCandyById(id)
             if (candyEntity != null) {
                 emit(Resource.Success(candyEntity.toCandy()))
-                emit(Resource.Loading(false))
                 return@flow
             }
             emit(Resource.Error("Error no dessert found."))
-            emit(Resource.Loading(false))
         }
     }
 }

@@ -53,15 +53,13 @@ class DetailsScreenViewModel @Inject constructor(
                             it.copy(isLoading = false)
                         }
                     }
-                    is Resource.Loading -> {
-                        _detailsState.update {
-                            it.copy(isLoading = result.isLoading)
-                        }
-                    }
                     is Resource.Success -> {
                         result.data?.let { candy ->
                             _detailsState.update {
-                                it.copy(dessert = candy)
+                                it.copy(
+                                    isLoading = false,
+                                    dessert = candy
+                                )
                             }
                         }
                     }
