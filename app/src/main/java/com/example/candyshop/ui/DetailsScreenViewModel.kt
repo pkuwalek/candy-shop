@@ -21,10 +21,6 @@ class DetailsScreenViewModel @Inject constructor(
     private val candyItemsRepository: CandyItemsRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    var textFieldInput by mutableStateOf("")
-        private set
-    var showCart by mutableStateOf(false)
-
 //    private val _shoppingCartItems = mutableStateListOf<CartItem>()
 //    val shoppingCartItems: List<CartItem> = _shoppingCartItems
 
@@ -34,7 +30,19 @@ class DetailsScreenViewModel @Inject constructor(
     val detailsState = _detailsState.asStateFlow()
 
     fun updateTextField(userInput: String) {
-        textFieldInput = userInput
+        viewModelScope.launch {
+            _detailsState.update {
+                it.copy(textFieldInput = userInput)
+            }
+        }
+    }
+
+    fun updateShowCart(show: Boolean) {
+        viewModelScope.launch {
+            _detailsState.update {
+                it.copy(showCart = show)
+            }
+        }
     }
 
     init {

@@ -94,7 +94,7 @@ fun ShoppingCartAlert(
         dismissButton = {
             TextButton(
                 onClick = {
-                    detailsViewModel.showCart = false
+                    detailsViewModel.updateShowCart(false)
                 }
             ) {
                 Text(text = "Close")
@@ -114,6 +114,7 @@ fun TopBar(
     navController: NavController,
     detailsViewModel: DetailsScreenViewModel = viewModel()
 ) {
+    val detailsState = detailsViewModel.detailsState.collectAsState().value
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -137,7 +138,7 @@ fun TopBar(
         actions = {
             IconButton(
                 onClick = {
-                    detailsViewModel.showCart = true
+                    detailsViewModel.updateShowCart(true)
                 }
             ) {
                 Icon(
@@ -146,7 +147,7 @@ fun TopBar(
                     tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
-            if (detailsViewModel.showCart) {
+            if (detailsState.showCart) {
                 ShoppingCartAlert()
             }
         }
@@ -162,6 +163,8 @@ fun DetailsScreenContent(
     shopViewModel: DetailsScreenViewModel
 ) {
     val focusManager = LocalFocusManager.current
+    val detailsState = shopViewModel.detailsState.collectAsState().value
+
     Scaffold(
         topBar = { TopBar(navController) }
     ) { innerPadding ->
@@ -211,7 +214,7 @@ fun DetailsScreenContent(
             }
             Column {
                 QuantityTextField(
-                    textFieldInput = shopViewModel.textFieldInput,
+                    textFieldInput = detailsState.textFieldInput,
                     onTextFieldInputChanged = { shopViewModel.updateTextField(it) }
                 )
                 Spacer(Modifier.size(dimensionResource(id = R.dimen.padding_small)))
