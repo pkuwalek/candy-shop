@@ -57,10 +57,16 @@ class CandyItemsRepositoryImplementation @Inject constructor(
                 }
             }
 
-            candyDatabase.candyDao.upsertCandyList(candyEntities)
-            emit(Resource.Success(
-                candyEntities.map { it.toCandy() }
-            ))
+            try {
+                candyDatabase.candyDao.upsertCandyList(candyEntities)
+                emit(Resource.Success(
+                    candyEntities.map { it.toCandy() }
+                ))
+            } catch (e: Exception) {
+                e.printStackTrace()
+                emit(Resource.Error(message = "Error updating the database."))
+                return@flow
+            }
         }
     }
 
