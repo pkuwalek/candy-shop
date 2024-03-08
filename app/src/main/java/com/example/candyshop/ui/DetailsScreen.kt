@@ -31,9 +31,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
@@ -47,9 +45,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.candyshop.R
 import com.example.candyshop.ui.theme.CandyShopTheme
@@ -96,7 +94,7 @@ fun ShoppingCartAlert(
         dismissButton = {
             TextButton(
                 onClick = {
-                    detailsViewModel.showCart = false
+                    detailsViewModel.updateShowCart(false)
                 }
             ) {
                 Text(text = "Close")
@@ -116,6 +114,7 @@ fun TopBar(
     navController: NavController,
     detailsViewModel: DetailsScreenViewModel = viewModel()
 ) {
+    val detailsState = detailsViewModel.detailsState.collectAsState().value
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -139,7 +138,7 @@ fun TopBar(
         actions = {
             IconButton(
                 onClick = {
-                    detailsViewModel.showCart = true
+                    detailsViewModel.updateShowCart(true)
                 }
             ) {
                 Icon(
@@ -148,7 +147,7 @@ fun TopBar(
                     tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
-            if (detailsViewModel.showCart) {
+            if (detailsState.showCart) {
                 ShoppingCartAlert()
             }
         }
@@ -164,6 +163,8 @@ fun DetailsScreenContent(
     shopViewModel: DetailsScreenViewModel
 ) {
     val focusManager = LocalFocusManager.current
+    val detailsState = shopViewModel.detailsState.collectAsState().value
+
     Scaffold(
         topBar = { TopBar(navController) }
     ) { innerPadding ->
@@ -213,7 +214,7 @@ fun DetailsScreenContent(
             }
             Column {
                 QuantityTextField(
-                    textFieldInput = shopViewModel.textFieldInput,
+                    textFieldInput = detailsState.textFieldInput,
                     onTextFieldInputChanged = { shopViewModel.updateTextField(it) }
                 )
                 Spacer(Modifier.size(dimensionResource(id = R.dimen.padding_small)))
@@ -247,13 +248,11 @@ fun DetailsScreenContent(
 }
 
 @Composable
-fun DetailsScreen(
-    id: Int?,
-    navController: NavController
-) {
-    val detailsViewModel: DetailsScreenViewModel = viewModel(factory = DetailsScreenViewModel.Factory)
-    val item by remember { mutableStateOf(detailsViewModel.getDessertById(id)) }
-    item?.let {
+fun DetailsScreen(navController: NavController) {
+    val detailsViewModel = hiltViewModel<DetailsScreenViewModel>()
+    val detailsState = detailsViewModel.detailsState.collectAsState().value
+
+    detailsState.dessert?.let {
         DetailsScreenContent(
             candyName = it.name,
             photoUrl = it.imageUrl,

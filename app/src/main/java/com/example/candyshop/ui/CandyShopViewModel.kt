@@ -1,47 +1,51 @@
 package com.example.candyshop.ui
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.candyshop.CandyApplication
-import com.example.candyshop.data.CandyItemsRepository
-import com.example.candyshop.data.CandyUiState
-import com.example.candyshop.database.TempDatabase
+import com.example.candyshop.api.CandyItemsRepository
+import com.example.candyshop.data.Resource
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.io.IOException
+import javax.inject.Inject
 
-class CandyShopViewModel(private val candyItemsRepository: CandyItemsRepository) : ViewModel() {
-    var candyUiState: CandyUiState by mutableStateOf(CandyUiState.Loading)
-        private set
+@HiltViewModel
+class CandyShopViewModel @Inject constructor(
+    private val candyItemsRepository: CandyItemsRepository
+) : ViewModel() {
+    private var _candyUiState = MutableStateFlow(CandyUiState())
+    val candyUiState = _candyUiState.asStateFlow()
 
     init {
-        getDessertDetails()
+        getDessertDetails(false)
     }
 
-    private fun getDessertDetails() {
+    private fun getDessertDetails(forceFetchFromRemote: Boolean) {
         viewModelScope.launch {
-            try {
-                val listResult = candyItemsRepository.getCandyItems()
-                candyUiState = CandyUiState.Success(listResult.meals)
-                TempDatabase.allDesserts.addAll(listResult.meals)
-            } catch (e: IOException) {
-                CandyUiState.Error
+            _candyUiState.update {
+                it.copy(isLoading = true)
             }
-        }
-    }
-
-    companion object {
-        val Factory: ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val application = (this[APPLICATION_KEY] as CandyApplication)
-                val candyItemsRepository = application.container.candyItemsRepository
-                CandyShopViewModel(candyItemsRepository = candyItemsRepository)
+            candyItemsRepository.getCandyItems(forceFetchFromRemote).collectLatest { result ->
+                when (result) {
+                    is Resource.Error -> {
+                        _candyUiState.update {
+                            it.copy(isLoading = false)
+                        }
+                    }
+                    is Resource.Success -> {
+                        result.data?.let { candyList ->
+                            _candyUiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    dessertList = candyUiState.value.dessertList + candyList
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
     }

@@ -1,39 +1,62 @@
 package com.example.candyshop.ui
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.candyshop.CandyApplication
-import com.example.candyshop.database.TempDatabase
-import com.example.candyshop.network.CandyItem
+import androidx.lifecycle.viewModelScope
+import com.example.candyshop.api.CandyItemsRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class DetailsScreenViewModel(private val temporaryDb: TempDatabase) : ViewModel() {
-    var textFieldInput by mutableStateOf("")
-        private set
-    var showCart by mutableStateOf(false)
-
+@HiltViewModel
+class DetailsScreenViewModel @Inject constructor(
+    private val candyItemsRepository: CandyItemsRepository,
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
 //    private val _shoppingCartItems = mutableStateListOf<CartItem>()
 //    val shoppingCartItems: List<CartItem> = _shoppingCartItems
 
+    private val candyId = savedStateHandle.get<Int>("id")
+
+    private var _detailsState = MutableStateFlow(DetailsState())
+    val detailsState = _detailsState.asStateFlow()
+
     fun updateTextField(userInput: String) {
-        textFieldInput = userInput
+        viewModelScope.launch {
+            _detailsState.update {
+                it.copy(textFieldInput = userInput)
+            }
+        }
     }
 
-    fun getDessertById(id: Int?): CandyItem? {
-        return temporaryDb.findOne(id)
+    fun updateShowCart(show: Boolean) {
+        viewModelScope.launch {
+            _detailsState.update {
+                it.copy(showCart = show)
+            }
+        }
     }
 
-    companion object {
-        val Factory: ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                (this[APPLICATION_KEY] as CandyApplication)
-                val temporaryDb = TempDatabase
-                DetailsScreenViewModel(temporaryDb = temporaryDb)
+    init {
+        getDessertById(candyId ?: -1)
+    }
+
+    private fun getDessertById(id: Int) {
+        viewModelScope.launch {
+            _detailsState.update {
+                it.copy(isLoading = true)
+            }
+            val result = candyItemsRepository.getCandy(id)
+            if (result != null) {
+                _detailsState.update {
+                    it.copy(
+                        isLoading = false,
+                        dessert = result
+                    )
+                }
             }
         }
     }
