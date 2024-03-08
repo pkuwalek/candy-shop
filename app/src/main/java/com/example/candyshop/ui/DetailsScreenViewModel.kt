@@ -1,17 +1,12 @@
 package com.example.candyshop.ui
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.candyshop.api.CandyItemsRepository
-import com.example.candyshop.data.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -54,23 +49,13 @@ class DetailsScreenViewModel @Inject constructor(
             _detailsState.update {
                 it.copy(isLoading = true)
             }
-            candyItemsRepository.getCandy(id).collectLatest { result ->
-                when (result) {
-                    is Resource.Error -> {
-                        _detailsState.update {
-                            it.copy(isLoading = false)
-                        }
-                    }
-                    is Resource.Success -> {
-                        result.data?.let { candy ->
-                            _detailsState.update {
-                                it.copy(
-                                    isLoading = false,
-                                    dessert = candy
-                                )
-                            }
-                        }
-                    }
+            val result = candyItemsRepository.getCandy(id)
+            if (result != null) {
+                _detailsState.update {
+                    it.copy(
+                        isLoading = false,
+                        dessert = result
+                    )
                 }
             }
         }

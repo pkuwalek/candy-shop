@@ -16,7 +16,7 @@ interface CandyItemsRepository {
         forceFetchFromRemote: Boolean
     ): Flow<Resource<List<Candy>>>
 
-    suspend fun getCandy(id: Int): Flow<Resource<Candy>>
+    suspend fun getCandy(id: Int): Candy?
 }
 
 class CandyItemsRepositoryImplementation @Inject constructor(
@@ -70,14 +70,7 @@ class CandyItemsRepositoryImplementation @Inject constructor(
         }
     }
 
-    override suspend fun getCandy(id: Int): Flow<Resource<Candy>> {
-        return flow {
-            val candyEntity = candyDatabase.candyDao.getCandyById(id)
-            if (candyEntity != null) {
-                emit(Resource.Success(candyEntity.toCandy()))
-                return@flow
-            }
-            emit(Resource.Error("Error no dessert found."))
-        }
+    override suspend fun getCandy(id: Int): Candy? {
+        return candyDatabase.candyDao.getCandyById(id)?.toCandy()
     }
 }
