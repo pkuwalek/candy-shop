@@ -76,6 +76,7 @@ dependencies {
     testImplementation("io.mockk:mockk:1.13.10")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.2")
+    testImplementation("app.cash.turbine:turbine:1.1.0")
     // Retrofit
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")

@@ -1,41 +1,27 @@
 package com.example.candyshop
 
-import android.content.Context
-import androidx.room.Room
-import androidx.test.core.app.ApplicationProvider
-import com.example.candyshop.data.db.CandyDao
-import com.example.candyshop.data.db.CandyDatabase
-import com.example.candyshop.data.db.CandyEntity
-import com.example.candyshop.fake.FakeCandyItemsRepository
+import app.cash.turbine.test
+import com.example.candyshop.api.CandyItemsRepository
+import com.example.candyshop.data.Resource
+import com.example.candyshop.data.model.Candy
 import com.example.candyshop.rules.TestDispatcherRule
 import com.example.candyshop.ui.CandyShopViewModel
 import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
-import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit4.MockKRule
 import io.mockk.unmockkAll
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.After
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.io.IOException
 
 class CandyShopViewModelTest {
-
-    private val upsertData = listOf(
-        CandyEntity(
-            name = "FirstDessert",
-            imageUrl = "url1",
-            id = "12345",
-            price = 10
-        ), CandyEntity (
-            name = "SecondDessert",
-            imageUrl = "url2",
-            id = "54321",
-            price = 10
-        )
-    )
 
     @get:Rule
     val testDispatcher = TestDispatcherRule()
@@ -44,15 +30,13 @@ class CandyShopViewModelTest {
     val mockkRule = MockKRule(this)
 
     @MockK
-    lateinit var candyShopViewModel: CandyShopViewModel
+    private lateinit var candyItemsRepository: CandyItemsRepository
 
-    @RelaxedMockK
-    private lateinit var candyItemsRepository: FakeCandyItemsRepository
+    private lateinit var candyShopViewModel: CandyShopViewModel
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        candyShopViewModel = CandyShopViewModel(candyItemsRepository)
     }
 
     @After
@@ -60,15 +44,58 @@ class CandyShopViewModelTest {
         unmockkAll()
     }
 
+    @Test
+    fun candyShopViewModel_getDessertDetails_verifyCandyUiStateSuccess() = runTest {
+        val fakeCandyList = listOf(
+            Candy(
+                name = "FirstDessert",
+                imageUrl = "url1",
+                id = "12345",
+                price = 10
+            ), Candy(
+                name = "SecondDessert",
+                imageUrl = "url2",
+                id = "54321",
+                price = 10
+            )
+        )
+
+        coEvery {
+            candyItemsRepository.getCandyItems(false)
+        } returns flowOf(Resource.Success(data = fakeCandyList))
+        candyShopViewModel = CandyShopViewModel(candyItemsRepository)
+
+        flowOf(candyShopViewModel.candyUiState.value.dessertList).test {
+            assertEquals(fakeCandyList, awaitItem())
+            awaitComplete()
+        }
+        flowOf(candyShopViewModel.candyUiState.value.isLoading).test {
+            assertFalse(awaitItem())
+            awaitComplete()
+        }
+        coVerify {
+            candyItemsRepository
+            candyItemsRepository.getCandyItems(false)
+            candyShopViewModel.candyUiState.value.isLoading
+            candyShopViewModel.candyUiState.value.dessertList
+        }
+    }
 
     @Test
-    fun candyShopViewModel_getDessertDetails_verifyCandyUiStateDessertList() =
-        runTest {
+    fun candyShopViewModel_getDessertDetails_verifyCandyUiStateError() = runTest {
+        coEvery {
+            candyItemsRepository.getCandyItems(false)
+        } returns flowOf(Resource.Error(message = "Error loading desserts. IOException"))
+        candyShopViewModel = CandyShopViewModel(candyItemsRepository)
 
-
-//            assertEquals(
-//                CandyUiState.Success(FakeDataSource.dessertList.meals),
-//                candyShopViewModel.candyUiState
-//            )
+        flowOf(candyShopViewModel.candyUiState.value.isLoading).test {
+            assertFalse(awaitItem())
+            awaitComplete()
         }
+        coVerify {
+            candyItemsRepository
+            candyItemsRepository.getCandyItems(false)
+            candyShopViewModel.candyUiState.value.isLoading
+        }
+    }
 }
