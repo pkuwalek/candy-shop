@@ -1,10 +1,10 @@
 package com.example.candyshop.fake
 
-import com.example.candyshop.data.CandyItemsRepository
-import com.example.candyshop.network.Meals
+import com.example.candyshop.api.CandyItemsRepositoryImplementation
+import com.example.candyshop.api.CandyListDto
 
-class FakeNetworkCandyItemsRepository : CandyItemsRepository {
-    override suspend fun getCandyItems(): Meals {
-        return FakeDataSource.dessertList
-    }
-}
+//class FakeCandyItemsRepositoryImplementation : CandyItemsRepositoryImplementation {
+//    override suspend fun getCandyItems(): Meals {
+//        return FakeDataSource.dessertList
+//    }
+//}

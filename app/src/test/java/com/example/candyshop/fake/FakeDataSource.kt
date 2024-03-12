@@ -1,17 +1,17 @@
 package com.example.candyshop.fake
 
-import com.example.candyshop.network.CandyItem
-import com.example.candyshop.network.Meals
+import com.example.candyshop.api.CandyDto
+import com.example.candyshop.api.CandyListDto
 
 object FakeDataSource {
-    val dessertList = Meals(
+    val dessertList = CandyListDto(
         meals = listOf(
-            CandyItem(
+            CandyDto(
                 name = "FirstDessert",
                 imageUrl = "url1",
                 id = "12345",
                 price = 10
-            ), CandyItem(
+            ), CandyDto(
                 name = "SecondDessert",
                 imageUrl = "url2",
                 id = "54321",
