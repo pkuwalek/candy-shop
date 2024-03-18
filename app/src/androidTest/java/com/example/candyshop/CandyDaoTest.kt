@@ -7,7 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.candyshop.data.db.CandyDao
 import com.example.candyshop.data.db.CandyDatabase
 import com.example.candyshop.data.db.CandyEntity
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -56,7 +56,7 @@ class CandyDaoTest {
 
     @Test
     @Throws(Exception::class)
-    fun candyDaoUpsertCandyList_returnsAllItemsFromDb() = runBlocking {
+    fun candyDaoUpsertCandyList_returnsAllItemsFromDb() = runTest {
         addDataToDb()
         val candyFromDb = candyDao.getAllCandy()
         assertEquals(upsertData, candyFromDb)
@@ -64,7 +64,7 @@ class CandyDaoTest {
 
     @Test
     @Throws(Exception::class)
-    fun candyDaoGetCandyById_findsOneItemInDb() = runBlocking {
+    fun candyDaoGetCandyById_findsOneItemInDb() = runTest {
         addDataToDb()
         val oneItem = candyDao.getCandyById(12345)
         assertEquals(upsertData[0], oneItem)
@@ -72,7 +72,7 @@ class CandyDaoTest {
 
     @Test
     @Throws(Exception::class)
-    fun candyDaoGetCandyById_noItemFound() = runBlocking {
+    fun candyDaoGetCandyById_noItemFound() = runTest {
         addDataToDb()
         val item = candyDao.getCandyById(987)
         assertNull(item)
