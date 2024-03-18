@@ -1,5 +1,6 @@
 package com.example.candyshop.data
 
+import app.cash.turbine.test
 import com.example.candyshop.api.CandyApiService
 import com.example.candyshop.api.CandyDto
 import com.example.candyshop.api.CandyItemsRepositoryImplementation
@@ -83,13 +84,11 @@ class CandyItemsRepositoryImplementationTest {
     fun candyItemsRepositoryImplementation_getCandyItems_loadLocallySuccess() = runTest {
         coEvery { candyDatabase.candyDao.getAllCandy() } returns fakeLocalCandyList
         candyItemsRepositoryImplementation = CandyItemsRepositoryImplementation(candyApiService, candyDatabase)
-        val flow = candyItemsRepositoryImplementation.getCandyItems(forceFetchFromRemote = false)
-        flow.collect { resource: Resource<List<Candy>> ->
-            assertEquals(result, resource.data)
+        candyItemsRepositoryImplementation.getCandyItems(forceFetchFromRemote = false).test {
+            assertEquals(result, awaitItem().data)
+            cancelAndConsumeRemainingEvents()
         }
         coVerify {
-            candyApiService
-            candyDatabase
             candyDatabase.candyDao.getAllCandy()
         }
     }
@@ -98,9 +97,9 @@ class CandyItemsRepositoryImplementationTest {
     fun candyItemsRepositoryImplementation_getCandyItems_loadFromRemoteSuccess() = runTest {
         coEvery { candyApiService.getDesserts() } returns fakeRemoteCandyList
         candyItemsRepositoryImplementation = CandyItemsRepositoryImplementation(candyApiService, candyDatabase)
-        val flow = candyItemsRepositoryImplementation.getCandyItems(forceFetchFromRemote = true)
-        flow.collect { resource: Resource<List<Candy>> ->
-            assertEquals(result, resource.data)
+        candyItemsRepositoryImplementation.getCandyItems(forceFetchFromRemote = true).test {
+            assertEquals(result, awaitItem().data)
+            cancelAndConsumeRemainingEvents()
         }
         coVerify {
             candyApiService
@@ -128,9 +127,9 @@ class CandyItemsRepositoryImplementationTest {
     fun candyItemsRepositoryImplementation_getCandyItems_loadFromRemoteIoException() = runTest {
         coEvery { candyApiService.getDesserts() }.throws(IOException())
         candyItemsRepositoryImplementation = CandyItemsRepositoryImplementation(candyApiService, candyDatabase)
-        val flow = candyItemsRepositoryImplementation.getCandyItems(true)
-        flow.collect { resource: Resource<List<Candy>> ->
-            assertEquals("Error loading desserts. IOException", resource.message)
+        candyItemsRepositoryImplementation.getCandyItems(true).test {
+            assertEquals("Error loading desserts. IOException", awaitItem().message)
+            cancelAndConsumeRemainingEvents()
         }
         coVerify {
             candyApiService
@@ -145,9 +144,9 @@ class CandyItemsRepositoryImplementationTest {
             "HTTP Exception".toResponseBody("plain/text".toMediaTypeOrNull())
         )))
         candyItemsRepositoryImplementation = CandyItemsRepositoryImplementation(candyApiService, candyDatabase)
-        val flow = candyItemsRepositoryImplementation.getCandyItems(true)
-        flow.collect { resource: Resource<List<Candy>> ->
-            assertEquals("Error loading desserts. HTTPException", resource.message)
+        candyItemsRepositoryImplementation.getCandyItems(true).test {
+            assertEquals("Error loading desserts. HTTPException", awaitItem().message)
+            cancelAndConsumeRemainingEvents()
         }
         coVerify {
             candyApiService
@@ -160,9 +159,9 @@ class CandyItemsRepositoryImplementationTest {
     fun candyItemsRepositoryImplementation_getCandyItems_loadFromRemoteException() = runTest {
         coEvery { candyApiService.getDesserts() }.throws(Exception())
         candyItemsRepositoryImplementation = CandyItemsRepositoryImplementation(candyApiService, candyDatabase)
-        val flow = candyItemsRepositoryImplementation.getCandyItems(true)
-        flow.collect { resource: Resource<List<Candy>> ->
-            assertEquals("Error loading desserts. GeneralException", resource.message)
+        candyItemsRepositoryImplementation.getCandyItems(true).test {
+            assertEquals("Error loading desserts. GeneralException", awaitItem().message)
+            cancelAndConsumeRemainingEvents()
         }
         coVerify {
             candyApiService
@@ -176,9 +175,9 @@ class CandyItemsRepositoryImplementationTest {
         coEvery { candyApiService.getDesserts() } returns fakeRemoteCandyList
         coEvery { candyDatabase.candyDao.upsertCandyList(fakeLocalCandyList) }.throws(Exception())
         candyItemsRepositoryImplementation = CandyItemsRepositoryImplementation(candyApiService, candyDatabase)
-        val flow = candyItemsRepositoryImplementation.getCandyItems(true)
-        flow.collect { resource: Resource<List<Candy>> ->
-            assertEquals("Error updating the database.", resource.message)
+        candyItemsRepositoryImplementation.getCandyItems(true).test {
+            assertEquals("Error updating the database.", awaitItem().message)
+            cancelAndConsumeRemainingEvents()
         }
         coVerify {
             candyApiService
@@ -223,5 +222,4 @@ class CandyItemsRepositoryImplementationTest {
             candyDatabase.candyDao.getCandyById(123)
         }
     }
-
 }
