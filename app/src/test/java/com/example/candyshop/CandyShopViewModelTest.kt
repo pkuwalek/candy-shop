@@ -6,18 +6,14 @@ import com.example.candyshop.data.Resource
 import com.example.candyshop.data.model.Candy
 import com.example.candyshop.rules.TestDispatcherRule
 import com.example.candyshop.ui.CandyShopViewModel
-import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit4.MockKRule
-import io.mockk.unmockkAll
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -33,16 +29,6 @@ class CandyShopViewModelTest {
     private lateinit var candyItemsRepository: CandyItemsRepository
 
     private lateinit var candyShopViewModel: CandyShopViewModel
-
-    @Before
-    fun setUp() {
-        MockKAnnotations.init(this)
-    }
-
-    @After
-    fun tearDown() {
-        unmockkAll()
-    }
 
     @Test
     fun candyShopViewModel_getDessertDetails_verifyCandyUiStateSuccess() = runTest {

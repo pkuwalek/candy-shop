@@ -5,16 +5,13 @@ import com.example.candyshop.api.CandyItemsRepository
 import com.example.candyshop.data.model.Candy
 import com.example.candyshop.rules.TestDispatcherRule
 import com.example.candyshop.ui.DetailsScreenViewModel
-import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit4.MockKRule
-import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.test.runTest
-import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
@@ -41,15 +38,9 @@ class DetailsScreenViewModelTest {
 
     @Before
     fun setUp() {
-        MockKAnnotations.init(this)
         every { savedStateHandle.get<Int>("id") } returns 12345
         coEvery { candyItemsRepository.getCandy(12345) } returns null
         detailsScreenViewModel = DetailsScreenViewModel(candyItemsRepository, savedStateHandle)
-    }
-
-    @After
-    fun tearDown() {
-        unmockkAll()
     }
 
     @Test

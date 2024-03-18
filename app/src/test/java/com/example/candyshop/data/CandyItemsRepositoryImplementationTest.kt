@@ -8,20 +8,16 @@ import com.example.candyshop.data.db.CandyDatabase
 import com.example.candyshop.data.db.CandyEntity
 import com.example.candyshop.data.model.Candy
 import com.example.candyshop.rules.TestDispatcherRule
-import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit4.MockKRule
-import io.mockk.unmockkAll
 import kotlinx.coroutines.test.runTest
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody
 import okhttp3.ResponseBody.Companion.toResponseBody
-import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import retrofit2.HttpException
@@ -82,16 +78,6 @@ class CandyItemsRepositoryImplementationTest {
     private lateinit var candyDatabase: CandyDatabase
 
     private lateinit var candyItemsRepositoryImplementation: CandyItemsRepositoryImplementation
-
-    @Before
-    fun setUp() {
-        MockKAnnotations.init(this)
-    }
-
-    @After
-    fun tearDown() {
-        unmockkAll()
-    }
 
     @Test
     fun candyItemsRepositoryImplementation_getCandyItems_loadLocallySuccess() = runTest {
