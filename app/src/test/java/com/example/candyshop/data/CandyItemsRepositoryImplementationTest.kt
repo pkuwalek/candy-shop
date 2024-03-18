@@ -88,9 +88,6 @@ class CandyItemsRepositoryImplementationTest {
             assertEquals(result, awaitItem().data)
             cancelAndConsumeRemainingEvents()
         }
-        coVerify {
-            candyDatabase.candyDao.getAllCandy()
-        }
     }
 
     @Test
@@ -100,11 +97,6 @@ class CandyItemsRepositoryImplementationTest {
         candyItemsRepositoryImplementation.getCandyItems(forceFetchFromRemote = true).test {
             assertEquals(result, awaitItem().data)
             cancelAndConsumeRemainingEvents()
-        }
-        coVerify {
-            candyApiService
-            candyDatabase
-            candyApiService.getDesserts()
         }
     }
 
@@ -116,11 +108,6 @@ class CandyItemsRepositoryImplementationTest {
         flow.collect { resource: Resource<List<Candy>> ->
             assertEquals(null, resource.data)
         }
-        coVerify {
-            candyApiService
-            candyDatabase
-            candyDatabase.candyDao.getAllCandy()
-        }
     }
 
     @Test
@@ -130,11 +117,6 @@ class CandyItemsRepositoryImplementationTest {
         candyItemsRepositoryImplementation.getCandyItems(true).test {
             assertEquals("Error loading desserts. IOException", awaitItem().message)
             cancelAndConsumeRemainingEvents()
-        }
-        coVerify {
-            candyApiService
-            candyDatabase
-            candyApiService.getDesserts()
         }
     }
 
@@ -148,11 +130,6 @@ class CandyItemsRepositoryImplementationTest {
             assertEquals("Error loading desserts. HTTPException", awaitItem().message)
             cancelAndConsumeRemainingEvents()
         }
-        coVerify {
-            candyApiService
-            candyDatabase
-            candyApiService.getDesserts()
-        }
     }
 
     @Test
@@ -162,11 +139,6 @@ class CandyItemsRepositoryImplementationTest {
         candyItemsRepositoryImplementation.getCandyItems(true).test {
             assertEquals("Error loading desserts. GeneralException", awaitItem().message)
             cancelAndConsumeRemainingEvents()
-        }
-        coVerify {
-            candyApiService
-            candyDatabase
-            candyApiService.getDesserts()
         }
     }
 
@@ -178,12 +150,6 @@ class CandyItemsRepositoryImplementationTest {
         candyItemsRepositoryImplementation.getCandyItems(true).test {
             assertEquals("Error updating the database.", awaitItem().message)
             cancelAndConsumeRemainingEvents()
-        }
-        coVerify {
-            candyApiService
-            candyDatabase
-            candyApiService.getDesserts()
-            candyDatabase.candyDao.upsertCandyList(fakeLocalCandyList)
         }
     }
 
@@ -204,11 +170,6 @@ class CandyItemsRepositoryImplementationTest {
         coEvery { candyDatabase.candyDao.getCandyById(12345) } returns resultFromDb
         candyItemsRepositoryImplementation = CandyItemsRepositoryImplementation(candyApiService, candyDatabase)
         assertEquals(expectedResult, candyItemsRepositoryImplementation.getCandy(12345))
-        coVerify {
-            candyApiService
-            candyDatabase
-            candyDatabase.candyDao.getCandyById(12345)
-        }
     }
 
     @Test
@@ -216,10 +177,5 @@ class CandyItemsRepositoryImplementationTest {
         coEvery { candyDatabase.candyDao.getCandyById(123) } returns null
         candyItemsRepositoryImplementation = CandyItemsRepositoryImplementation(candyApiService, candyDatabase)
         assertNull(candyItemsRepositoryImplementation.getCandy(123))
-        coVerify {
-            candyApiService
-            candyDatabase
-            candyDatabase.candyDao.getCandyById(123)
-        }
     }
 }

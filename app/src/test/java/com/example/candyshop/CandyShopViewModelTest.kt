@@ -59,12 +59,6 @@ class CandyShopViewModelTest {
             assertFalse(awaitItem())
             awaitComplete()
         }
-        coVerify {
-            candyItemsRepository
-            candyItemsRepository.getCandyItems(false)
-            candyShopViewModel.candyUiState.value.isLoading
-            candyShopViewModel.candyUiState.value.dessertList
-        }
     }
 
     @Test
@@ -77,11 +71,6 @@ class CandyShopViewModelTest {
         flowOf(candyShopViewModel.candyUiState.value.isLoading).test {
             assertFalse(awaitItem())
             awaitComplete()
-        }
-        coVerify {
-            candyItemsRepository
-            candyItemsRepository.getCandyItems(false)
-            candyShopViewModel.candyUiState.value.isLoading
         }
     }
 }

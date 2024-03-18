@@ -31,7 +31,6 @@ class CandyMapperTest {
     @Test
     fun candyMapper_candyDtoToEntity_verifyCandyEntity() {
         assertEquals(candyEntity, candyDto.toCandyEntity())
-
     }
 
     @Test

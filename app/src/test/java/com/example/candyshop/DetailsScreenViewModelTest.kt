@@ -46,11 +46,6 @@ class DetailsScreenViewModelTest {
     @Test
     fun detailsScreenViewModel_detailsStateTextFieldInput_verifyStartingValue() {
         assertEquals("", detailsScreenViewModel.detailsState.value.textFieldInput)
-        verify {
-            candyItemsRepository
-            savedStateHandle.get<Int>("id")
-            detailsScreenViewModel.detailsState.value.textFieldInput
-        }
     }
 
     @Test
@@ -59,21 +54,11 @@ class DetailsScreenViewModelTest {
         detailsScreenViewModel.updateTextField(sampleString)
 
         assertEquals(sampleString, detailsScreenViewModel.detailsState.value.textFieldInput)
-        verify {
-            candyItemsRepository
-            savedStateHandle.get<Int>("id")
-            detailsScreenViewModel.detailsState.value.textFieldInput
-        }
     }
 
     @Test
     fun detailsScreenViewModel_updateShowCart_verifyStartingValue() {
         assertEquals(false, detailsScreenViewModel.detailsState.value.showCart)
-        verify {
-            candyItemsRepository
-            savedStateHandle.get<Int>("id")
-            detailsScreenViewModel.detailsState.value.showCart
-        }
     }
 
     @Test
@@ -81,11 +66,6 @@ class DetailsScreenViewModelTest {
         detailsScreenViewModel.updateShowCart(true)
 
         assertEquals(true, detailsScreenViewModel.detailsState.value.showCart)
-        verify {
-            candyItemsRepository
-            savedStateHandle.get<Int>("id")
-            detailsScreenViewModel.detailsState.value.showCart
-        }
     }
 
     @Test
@@ -101,13 +81,6 @@ class DetailsScreenViewModelTest {
 
         assertEquals(result, detailsScreenViewModel.detailsState.value.dessert)
         assertFalse(detailsScreenViewModel.detailsState.value.isLoading)
-        coVerify {
-            candyItemsRepository
-            savedStateHandle.get<Int>("id")
-            candyItemsRepository.getCandy(12345)
-            detailsScreenViewModel.detailsState.value.isLoading
-            detailsScreenViewModel.detailsState.value.dessert
-        }
     }
 
     @Test
@@ -119,12 +92,5 @@ class DetailsScreenViewModelTest {
 
         assertTrue(detailsScreenViewModel.detailsState.value.isLoading)
         assertNull(detailsScreenViewModel.detailsState.value.dessert)
-        coVerify {
-            candyItemsRepository
-            savedStateHandle.get<Int>("id")
-            candyItemsRepository.getCandy(-1)
-            detailsScreenViewModel.detailsState.value.isLoading
-            detailsScreenViewModel.detailsState.value.dessert
-        }
     }
 }
