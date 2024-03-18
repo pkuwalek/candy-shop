@@ -81,8 +81,10 @@ private fun QuantityTextField(
 
 @Composable
 fun ShoppingCartAlert(
+    updateShowCart: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
-    detailsViewModel: DetailsScreenViewModel = viewModel()
+//    detailsViewModel: DetailsScreenViewModel = viewModel()
+
 ) {
     AlertDialog(
         onDismissRequest = { },
@@ -94,7 +96,8 @@ fun ShoppingCartAlert(
         dismissButton = {
             TextButton(
                 onClick = {
-                    detailsViewModel.updateShowCart(false)
+//                    detailsViewModel.updateShowCart(false)
+                    updateShowCart(false)
                 }
             ) {
                 Text(text = "Close")
@@ -112,9 +115,11 @@ fun ShoppingCartAlert(
 @Composable
 fun TopBar(
     navController: NavController,
-    detailsViewModel: DetailsScreenViewModel = viewModel()
+    updateShowCart: (Boolean) -> Unit,
+    detailsState: DetailsState
+//    detailsViewModel: DetailsScreenViewModel = viewModel()
 ) {
-    val detailsState = detailsViewModel.detailsState.collectAsState().value
+//    val detailsState = detailsViewModel.detailsState.collectAsState().value
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -138,7 +143,8 @@ fun TopBar(
         actions = {
             IconButton(
                 onClick = {
-                    detailsViewModel.updateShowCart(true)
+//                    detailsViewModel.updateShowCart(true)
+                    updateShowCart(true)
                 }
             ) {
                 Icon(
@@ -148,7 +154,7 @@ fun TopBar(
                 )
             }
             if (detailsState.showCart) {
-                ShoppingCartAlert()
+                ShoppingCartAlert(updateShowCart)
             }
         }
     )
@@ -160,13 +166,16 @@ fun DetailsScreenContent(
     photoUrl: String,
     candyPrice: Int,
     navController: NavController,
-    shopViewModel: DetailsScreenViewModel
+//    shopViewModel: DetailsScreenViewModel
+    detailsState: DetailsState,
+    updateShowCart: (Boolean) -> Unit,
+    updateTextField: (String) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
-    val detailsState = shopViewModel.detailsState.collectAsState().value
+//    val detailsState = shopViewModel.detailsState.collectAsState().value
 
     Scaffold(
-        topBar = { TopBar(navController) }
+        topBar = { TopBar(navController, updateShowCart, detailsState) }
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -215,13 +224,13 @@ fun DetailsScreenContent(
             Column {
                 QuantityTextField(
                     textFieldInput = detailsState.textFieldInput,
-                    onTextFieldInputChanged = { shopViewModel.updateTextField(it) }
+                    onTextFieldInputChanged = { updateTextField(it) }
                 )
                 Spacer(Modifier.size(dimensionResource(id = R.dimen.padding_small)))
                 Button(
                     onClick = {
 //                            shopViewModel.addToCart(candyItem)
-                            shopViewModel.updateTextField("")
+                            updateTextField("")
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.tertiaryContainer,
@@ -258,7 +267,10 @@ fun DetailsScreen(navController: NavController) {
             photoUrl = it.imageUrl,
             candyPrice = it.price,
             navController = navController,
-            shopViewModel = detailsViewModel
+            detailsState = detailsState,
+            updateShowCart = { show -> detailsViewModel.updateShowCart(show)},
+            updateTextField = { userInput -> detailsViewModel.updateTextField(userInput) }
+//            shopViewModel = detailsViewModel
         )
     }
 }
