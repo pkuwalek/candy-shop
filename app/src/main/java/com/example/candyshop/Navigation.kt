@@ -1,5 +1,6 @@
 package com.example.candyshop
 
+import android.util.Log
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
@@ -12,6 +13,7 @@ import com.example.candyshop.ui.CandyShopMain
 import com.example.candyshop.ui.DetailsScreen
 
 private const val TWEEN_DURATION = 500
+
 @Composable
 fun Navigation() {
     val navController = rememberNavController()
@@ -36,7 +38,11 @@ fun Navigation() {
         }
     ) {
         composable(route = Screen.MainScreen.route) {
-            CandyShopMain(navController = navController)
+            CandyShopMain(
+                onNavigateToDetails = {candyId ->
+                    navController.navigate(Screen.DetailsScreen.route + "/$candyId")
+                }
+            )
         }
         composable(
             route = Screen.DetailsScreen.route + "/{id}",
