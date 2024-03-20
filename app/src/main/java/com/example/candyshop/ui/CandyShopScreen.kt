@@ -40,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -116,7 +117,7 @@ fun CandyCard(
     candyName: String,
     photoUrl: String,
     candyPrice: Int,
-    navController: NavController,
+    onNavigateToDetails: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -124,7 +125,9 @@ fun CandyCard(
             .fillMaxWidth()
             .bounceClickWithColorRipple(
                 color = MaterialTheme.colorScheme.surfaceTint,
-                onClick = { navController.navigate(Screen.DetailsScreen.withArgs(id.toInt())) }
+                onClick = {
+                    onNavigateToDetails(id.toInt())
+                }
             )
     ) {
         Row(
@@ -173,7 +176,8 @@ fun TopLogoBar(modifier: Modifier = Modifier) {
                 Text(
                     text = stringResource(id = R.string.app_name).uppercase(),
                     style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = modifier.testTag("mainScreen")
                 )
                 Spacer(Modifier.size(ButtonDefaults.IconSpacing))
                 Icon(
@@ -187,12 +191,10 @@ fun TopLogoBar(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun LoadingScreen() {
-    Text("We are in a loading screen.")
-}
-
-@Composable
-fun ResultScreen(items: List<Candy>, navController: NavController) {
+fun ResultScreen(
+    items: List<Candy>,
+    onNavigateToDetails: (Int) -> Unit
+) {
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     val showButton by remember { derivedStateOf { listState.firstVisibleItemIndex > 0 } }
@@ -213,7 +215,7 @@ fun ResultScreen(items: List<Candy>, navController: NavController) {
                         candyName = item.name,
                         photoUrl = item.imageUrl,
                         candyPrice = item.price,
-                        navController = navController,
+                        onNavigateToDetails = onNavigateToDetails,
                         modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small))
                     )
                 }
@@ -234,16 +236,13 @@ fun ResultScreen(items: List<Candy>, navController: NavController) {
 }
 
 @Composable
-fun CandyShopMain(navController: NavController) {
+fun CandyShopMain(onNavigateToDetails: (Int) -> Unit) {
     val candyShopViewModel = hiltViewModel<CandyShopViewModel>()
     val candyState = candyShopViewModel.candyUiState.collectAsState().value
-    if (candyState.isLoading) {
-        LoadingScreen()
-    } else {
-        ResultScreen(items = candyState.dessertList, navController = navController)
-    }
-
-
+    ResultScreen(
+        items = candyState.dessertList,
+        onNavigateToDetails
+    )
 }
 
 //@Preview(showBackground = true)

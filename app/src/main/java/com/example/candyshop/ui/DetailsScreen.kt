@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -75,14 +76,16 @@ private fun QuantityTextField(
             focusedLabelColor = MaterialTheme.colorScheme.onSecondaryContainer,
             unfocusedIndicatorColor = Color.Transparent,
             focusedIndicatorColor = Color.Transparent),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag("textField")
     )
 }
 
 @Composable
 fun ShoppingCartAlert(
-    modifier: Modifier = Modifier,
-    detailsViewModel: DetailsScreenViewModel = viewModel()
+    updateShowCart: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     AlertDialog(
         onDismissRequest = { },
@@ -94,7 +97,7 @@ fun ShoppingCartAlert(
         dismissButton = {
             TextButton(
                 onClick = {
-                    detailsViewModel.updateShowCart(false)
+                    updateShowCart(false)
                 }
             ) {
                 Text(text = "Close")
@@ -112,9 +115,9 @@ fun ShoppingCartAlert(
 @Composable
 fun TopBar(
     navController: NavController,
-    detailsViewModel: DetailsScreenViewModel = viewModel()
+    updateShowCart: (Boolean) -> Unit,
+    detailsState: DetailsState
 ) {
-    val detailsState = detailsViewModel.detailsState.collectAsState().value
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -138,7 +141,7 @@ fun TopBar(
         actions = {
             IconButton(
                 onClick = {
-                    detailsViewModel.updateShowCart(true)
+                    updateShowCart(true)
                 }
             ) {
                 Icon(
@@ -148,7 +151,7 @@ fun TopBar(
                 )
             }
             if (detailsState.showCart) {
-                ShoppingCartAlert()
+                ShoppingCartAlert(updateShowCart)
             }
         }
     )
@@ -160,13 +163,14 @@ fun DetailsScreenContent(
     photoUrl: String,
     candyPrice: Int,
     navController: NavController,
-    shopViewModel: DetailsScreenViewModel
+    detailsState: DetailsState,
+    updateShowCart: (Boolean) -> Unit,
+    updateTextField: (String) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
-    val detailsState = shopViewModel.detailsState.collectAsState().value
 
     Scaffold(
-        topBar = { TopBar(navController) }
+        topBar = { TopBar(navController, updateShowCart, detailsState) }
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -205,23 +209,23 @@ fun DetailsScreenContent(
                     modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_small))
                 )
                 Text(
-                        text = stringResource(
-                            id = R.string.price,
-                            NumberFormat.getCurrencyInstance().format(candyPrice)
-                        ),
+                    text = stringResource(
+                        id = R.string.price,
+                        NumberFormat.getCurrencyInstance().format(candyPrice)
+                    ),
                     style = MaterialTheme.typography.labelLarge
                 )
             }
             Column {
                 QuantityTextField(
                     textFieldInput = detailsState.textFieldInput,
-                    onTextFieldInputChanged = { shopViewModel.updateTextField(it) }
+                    onTextFieldInputChanged = { updateTextField(it) }
                 )
                 Spacer(Modifier.size(dimensionResource(id = R.dimen.padding_small)))
                 Button(
                     onClick = {
 //                            shopViewModel.addToCart(candyItem)
-                            shopViewModel.updateTextField("")
+                            updateTextField("")
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.tertiaryContainer,
@@ -258,7 +262,9 @@ fun DetailsScreen(navController: NavController) {
             photoUrl = it.imageUrl,
             candyPrice = it.price,
             navController = navController,
-            shopViewModel = detailsViewModel
+            detailsState = detailsState,
+            updateShowCart = { show -> detailsViewModel.updateShowCart(show)},
+            updateTextField = { userInput -> detailsViewModel.updateTextField(userInput) }
         )
     }
 }

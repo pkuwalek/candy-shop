@@ -18,7 +18,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.example.candyshop.MockTestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -71,12 +71,17 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation("androidx.test:runner:1.5.2")
+    androidTestImplementation("androidx.test:rules:1.5.0")
     androidTestImplementation(platform("androidx.compose:compose-bom:2024.02.01"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    testImplementation("io.mockk:mockk:1.13.10")
+    androidTestImplementation("androidx.navigation:navigation-testing:2.7.7")
     debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.2")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.3")
+    androidTestImplementation("com.google.dagger:hilt-android-testing:2.51")
+    testImplementation("io.mockk:mockk:1.13.10")
     testImplementation("app.cash.turbine:turbine:1.1.0")
+
     // Retrofit
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
