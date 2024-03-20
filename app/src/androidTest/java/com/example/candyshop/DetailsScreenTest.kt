@@ -41,11 +41,6 @@ class DetailsScreenTest {
 
     @Before
     fun init() {
-        hiltRule.inject()
-    }
-
-    @Test
-    fun detailsScreenContent_validateDisplays() {
         composeTestRule.activity.setContent {
             navController = TestNavHostController(LocalContext.current)
             navController.navigatorProvider.addNavigator(ComposeNavigator())
@@ -62,6 +57,10 @@ class DetailsScreenTest {
                 )
             }
         }
+    }
+
+    @Test
+    fun detailsScreenContent_validateDisplays() {
         composeTestRule.onNodeWithContentDescription("dessert image")
             .assertIsDisplayed()
         composeTestRule.onNodeWithText("About our Bakewell tart")
@@ -76,18 +75,31 @@ class DetailsScreenTest {
             .assertHasClickAction()
         composeTestRule.onNodeWithText("Your shopping cart")
             .assertIsNotDisplayed()
+    }
 
-        // TopBar tests
+    @Test
+    fun topBar_validateShoppingCartAlert() {
         composeTestRule.onNodeWithText("Shop")
             .assertIsDisplayed()
         composeTestRule.onNodeWithContentDescription("Arrow back")
             .assertIsDisplayed()
             .assertHasClickAction()
+        composeTestRule.onNodeWithText("Your shopping cart")
+            .assertIsNotDisplayed()
         composeTestRule.onNodeWithContentDescription("Shopping cart icon")
             .assertIsDisplayed()
             .assertHasClickAction()
+            .performClick()
+        composeTestRule.onNodeWithText("Your shopping cart")
+            .assertIsDisplayed()
+        composeTestRule.onNodeWithText("Close")
+            .performClick()
+        composeTestRule.onNodeWithText("Your shopping cart")
+            .assertIsNotDisplayed()
+    }
 
-        // QuantityTextField tests
+    @Test
+    fun quantityTextField_validateFunctionality() {
         composeTestRule.onNodeWithText("Choose quantity")
             .assertIsDisplayed()
         composeTestRule.onNodeWithTag("textField")
@@ -97,12 +109,14 @@ class DetailsScreenTest {
             .assertIsFocused()
             .performTextInput("test")
         composeTestRule.onNodeWithTag("textField")
-            .assert(hasText("test", ignoreCase = true))
+            .assert(hasText("test"))
         composeTestRule.onNodeWithText("ADD TO CART")
             .performClick()
         composeTestRule.onNodeWithContentDescription("dessert image")
             .performClick()
         composeTestRule.onNodeWithTag("textField")
             .assertIsNotFocused()
+        composeTestRule.onNodeWithText("test")
+            .assertDoesNotExist()
     }
 }
