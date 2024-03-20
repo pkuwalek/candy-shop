@@ -191,11 +191,6 @@ fun TopLogoBar(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun LoadingScreen() {
-    Text("We are in a loading screen.")
-}
-
-@Composable
 fun ResultScreen(
     items: List<Candy>,
     onNavigateToDetails: (Int) -> Unit
@@ -244,16 +239,10 @@ fun ResultScreen(
 fun CandyShopMain(onNavigateToDetails: (Int) -> Unit) {
     val candyShopViewModel = hiltViewModel<CandyShopViewModel>()
     val candyState = candyShopViewModel.candyUiState.collectAsState().value
-    if (candyState.isLoading) {
-        LoadingScreen()
-    } else {
-        ResultScreen(
-            items = candyState.dessertList,
-            onNavigateToDetails
-        )
-    }
-
-
+    ResultScreen(
+        items = candyState.dessertList,
+        onNavigateToDetails
+    )
 }
 
 //@Preview(showBackground = true)
