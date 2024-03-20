@@ -1,17 +1,15 @@
 package com.example.candyshop
 
 import androidx.activity.ComponentActivity
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.hasContentDescription
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
-import androidx.navigation.compose.ComposeNavigator
-import androidx.navigation.testing.TestNavHostController
 import com.example.candyshop.data.model.Candy
 import com.example.candyshop.ui.CandyCard
 import com.example.candyshop.ui.ResultScreen
@@ -21,11 +19,9 @@ import org.junit.Rule
 import org.junit.Test
 
 class CandyShopScreenTest {
-    private lateinit var navController: TestNavHostController
 
     @get:Rule
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
-
 
     @Test
     fun topLogoBar_logoExists() {
@@ -44,15 +40,13 @@ class CandyShopScreenTest {
     @Test
     fun candyCard_dessertsDisplay() {
         composeTestRule.setContent {
-            navController = TestNavHostController(LocalContext.current)
-            navController.navigatorProvider.addNavigator(ComposeNavigator())
             CandyShopTheme {
                 CandyCard(
                     id = "12345",
                     candyName = "Cherry Pie",
                     photoUrl = "fakeUrl",
                     candyPrice = 10,
-                    navController = navController)
+                    onNavigateToDetails = {})
             }
         }
         composeTestRule.onNodeWithText("Cherry Pie")
@@ -61,23 +55,36 @@ class CandyShopScreenTest {
     }
 
     @Test
-    fun resultScreen_scrollToTopIsInvisible() {
+    fun resultScreen_validateVisibility() {
         composeTestRule.setContent {
-            navController = TestNavHostController(LocalContext.current)
-            navController.navigatorProvider.addNavigator(ComposeNavigator())
             CandyShopTheme {
                 ResultScreen(
                     items = listOf(
-                        Candy(id = "12345",
-                        name = "Cherry Pie",
-                        imageUrl = "fakeUrl",
-                        price = 10)
+                        Candy(
+                            id = "12345",
+                            name = "Cherry Pie",
+                            imageUrl = "fakeUrl",
+                            price = 10),
+                        Candy(
+                            id = "23456",
+                            name = "Blueberry Pie",
+                            imageUrl = "fakeUrl",
+                            price = 10),
+                        Candy(
+                            id = "34567",
+                            name = "Pecan Pie",
+                            imageUrl = "fakeUrl",
+                            price = 10)
                     ),
-                    navController = navController
+                    onNavigateToDetails = {}
                 )
             }
         }
         composeTestRule.onNodeWithContentDescription("arrow upward")
             .assertIsNotDisplayed()
+        composeTestRule.onAllNodes(hasText("price: $10.00"))
+            .assertCountEquals(3)
+        composeTestRule.onNodeWithText("Pecan Pie").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Apple Pie").assertDoesNotExist()
     }
 }

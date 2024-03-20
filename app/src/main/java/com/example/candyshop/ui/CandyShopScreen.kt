@@ -40,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -175,7 +176,8 @@ fun TopLogoBar(modifier: Modifier = Modifier) {
                 Text(
                     text = stringResource(id = R.string.app_name).uppercase(),
                     style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = modifier.testTag("mainScreen")
                 )
                 Spacer(Modifier.size(ButtonDefaults.IconSpacing))
                 Icon(
