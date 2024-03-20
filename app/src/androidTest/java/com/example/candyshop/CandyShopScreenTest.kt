@@ -84,7 +84,9 @@ class CandyShopScreenTest {
             .assertIsNotDisplayed()
         composeTestRule.onAllNodes(hasText("price: $10.00"))
             .assertCountEquals(3)
-        composeTestRule.onNodeWithText("Pecan Pie").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Apple Pie").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Pecan Pie")
+            .assertIsDisplayed()
+        composeTestRule.onNodeWithText("Apple Pie")
+            .assertDoesNotExist()
     }
 }
