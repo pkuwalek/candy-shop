@@ -187,11 +187,6 @@ fun TopLogoBar(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun LoadingScreen() {
-    Text("We are in a loading screen.")
-}
-
-@Composable
 fun ResultScreen(items: List<Candy>, navController: NavController) {
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
@@ -237,11 +232,7 @@ fun ResultScreen(items: List<Candy>, navController: NavController) {
 fun CandyShopMain(navController: NavController) {
     val candyShopViewModel = hiltViewModel<CandyShopViewModel>()
     val candyState = candyShopViewModel.candyUiState.collectAsState().value
-    if (candyState.isLoading) {
-        LoadingScreen()
-    } else {
-        ResultScreen(items = candyState.dessertList, navController = navController)
-    }
+    ResultScreen(items = candyState.dessertList, navController = navController)
 
 
 }
