@@ -94,4 +94,6 @@ dependencies {
     kapt("com.google.dagger:hilt-compiler:2.51")
     kapt("androidx.hilt:hilt-compiler:1.2.0")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    // Splash API
+    implementation("androidx.core:core-splashscreen:1.0.1")
 }
